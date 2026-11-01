@@ -1,4 +1,4 @@
-import type { ReviewRequest, Verdict } from './types';
+import type { Brief, ChatMsg, Debrief, GeneratedIdea, JudgedIdea, ReviewRequest, Source, Verdict } from './types';
 
 // Render's fromService gives a bare host ("fangs-api.onrender.com"), so add the scheme if missing.
 const rawBase: string = (import.meta.env.VITE_API_BASE || '').trim().replace(/\/+$/, '');
@@ -48,21 +48,29 @@ export function parseSSE(buffer: string): { events: SSEEvent[]; rest: string } {
   return { events, rest };
 }
 
-/** Stream the digging log over SSE; fall back to one JSON response if streaming fails. */
-export async function streamReview(req: ReviewRequest, onLog: (msg: string) => void): Promise<Verdict> {
+async function postJSON(path: string, body: unknown): Promise<any> {
   let res: Response;
   try {
-    res = await fetch(`${API_BASE}/api/review/stream`, {
-      method: 'POST',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify(req),
-    });
+    res = await fetch(`${API_BASE}${path}`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) });
   } catch {
-    return jsonReview(req, onLog);
+    throw new Error('The tribunal is asleep (the API did not answer). Try again in a minute.');
+  }
+  const out = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(out.error || (out.detail ? 'The Count could not read that request.' : `The tribunal answered ${res.status}.`));
+  return out;
+}
+
+/** POST and read server-sent events until `doneEvent`. */
+async function stream(path: string, body: unknown, doneEvent: string, onLog: (msg: string) => void): Promise<any> {
+  let res: Response;
+  try {
+    res = await fetch(`${API_BASE}${path}`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) });
+  } catch {
+    throw new Error('The tribunal is asleep (the API did not answer). Try again in a minute.');
   }
   if (!res.ok || !res.body) {
-    if (res.status === 413) throw new Error('That is far too long, mortal.');
-    return jsonReview(req, onLog);
+    const out = await res.json().catch(() => ({}));
+    throw new Error(out.error || `The tribunal answered ${res.status}.`);
   }
   const reader = res.body.getReader();
   const decoder = new TextDecoder();
@@ -75,28 +83,55 @@ export async function streamReview(req: ReviewRequest, onLog: (msg: string) => v
     buffer = rest;
     for (const ev of events) {
       if (ev.event === 'log') onLog(ev.data.msg);
-      else if (ev.event === 'verdict') return ev.data as Verdict;
+      else if (ev.event === doneEvent) return ev.data;
       else if (ev.event === 'error') throw new Error(ev.data.msg || 'The tribunal fell silent.');
     }
   }
-  throw new Error('The tribunal fell silent before the verdict. Try again.');
+  throw new Error('The tribunal fell silent before it finished. Try again.');
+}
+
+export function streamReview(req: ReviewRequest, onLog: (msg: string) => void): Promise<Verdict> {
+  return stream('/api/review/stream', req, 'verdict', onLog);
 }
 
 export async function jsonReview(req: ReviewRequest, onLog: (msg: string) => void, path = '/api/review'): Promise<Verdict> {
-  let res: Response;
-  try {
-    res = await fetch(`${API_BASE}${path}`, {
-      method: 'POST',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify(req),
-    });
-  } catch {
-    throw new Error('The tribunal is asleep (the API did not answer). Try an example judgement meanwhile.');
-  }
-  const body = await res.json().catch(() => ({}));
+  const body = await postJSON(path, req);
   (body.logs || []).forEach((l: string) => onLog(l));
-  if (!res.ok || !body.verdict) throw new Error(body.error || (body.detail && 'The Count could not read that request.') || `The tribunal answered ${res.status}.`);
+  if (!body.verdict) throw new Error('The tribunal fell silent.');
   return body.verdict as Verdict;
+}
+
+export interface CaseDig {
+  brief: Brief;
+  patterns: string[];
+  winner_stats: Record<string, number> | null;
+  winners: { title: string; url: string }[];
+  sources: Source[];
+  winners_url?: string | null;
+  banner?: string;
+}
+
+export function streamCase(req: { url?: string; name?: string; text?: string; winners_url?: string }, onLog: (m: string) => void): Promise<CaseDig> {
+  return stream('/api/case/stream', req, 'case', onLog);
+}
+
+export async function askFangs(body: { message: string; context: string; history: Pick<ChatMsg, 'role' | 'content'>[]; tab: string }): Promise<{ reply: string; banner?: string }> {
+  return postJSON('/api/chat', body);
+}
+
+export async function judgeIdeas(body: { brief: Brief; ideas: string[]; patterns: string[]; user_context?: string }): Promise<{ ideas: JudgedIdea[]; best: number; banner?: string }> {
+  return postJSON('/api/ideas', { mode: 'judge', ...body });
+}
+
+export async function generateIdeas(body: { brief: Brief; patterns: string[]; user_context?: string }): Promise<{ ideas: GeneratedIdea[]; count_says?: string; banner?: string }> {
+  return postJSON('/api/ideas', { mode: 'generate', ideas: [], ...body });
+}
+
+export async function debriefCase(body: {
+  brief: Brief; submission: { title?: string; url?: string; text?: string; verdict_summary?: string };
+  winners_url?: string; winners_text?: string; result: 'won' | 'lost';
+}): Promise<{ logs: string[]; debrief: Debrief; banner?: string }> {
+  return postJSON('/api/debrief', body);
 }
 
 export async function getVerdict(id: string): Promise<Verdict> {
@@ -107,13 +142,7 @@ export async function getVerdict(id: string): Promise<Verdict> {
 }
 
 export async function scoreBacktest(results: { url: string; title: string; overall: number }[], winners: string[], topN: number) {
-  const r = await fetch(`${API_BASE}/api/backtest/score`, {
-    method: 'POST',
-    headers: { 'content-type': 'application/json' },
-    body: JSON.stringify({ results, winners, top_n: topN }),
-  });
-  if (!r.ok) throw new Error('Scoring failed.');
-  return r.json();
+  return postJSON('/api/backtest/score', { results, winners, top_n: topN });
 }
 
 let audio: HTMLAudioElement | null = null;

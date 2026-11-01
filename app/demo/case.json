@@ -1,0 +1,1103 @@
+{
+ "id": "demo-hacktoberfest-week3",
+ "name": "Hacktoberfest Week 3: Slow and Steady",
+ "url": "https://dev.to/devteam/join-the-hacktoberfest-open-source-ai-challenge-slow-and-steady-2850-in-prizes-across-21-3iee",
+ "createdAt": "2026-10-20T09:00:00+00:00",
+ "updatedAt": "2026-10-30T21:30:00+00:00",
+ "stage": "results",
+ "brief": {
+  "name": "Hacktoberfest Open-Source AI Challenge: Week 3",
+  "theme": "Build something with open-weight models or open-source AI that rewards laziness.",
+  "deadline": "October 25 at 11:59 PM PDT",
+  "deadline_iso": "2026-10-25T23:59:00-07:00",
+  "criteria": [
+   {
+    "name": "Writing Quality",
+    "description": "Is the post clear and engaging? Does it explain what you built, who it's for, and why open innovation matters?",
+    "weight": "weighted most heavily",
+    "weight_pct": 50
+   },
+   {
+    "name": "Relevance to the Prompt and Theme",
+    "description": "Is open-source AI or open-weight models at the core of the project? Does it genuinely save effort, help someone relax, or make life easier?",
+    "weight": null,
+    "weight_pct": 20
+   },
+   {
+    "name": "Creativity",
+    "description": "Is it an original idea, or a fresh take on a familiar problem?",
+    "weight": null,
+    "weight_pct": 15
+   },
+   {
+    "name": "Technical Execution",
+    "description": "Does it work, and is it well built?",
+    "weight": null,
+    "weight_pct": 10
+   },
+   {
+    "name": "Use of Partner Technology (optional)",
+    "description": "If you're entering a partner category, does the project use that technology in a meaningful way?",
+    "weight": null,
+    "weight_pct": 5
+   }
+  ],
+  "prize_categories": [
+   "Best Use of Render",
+   "Best Use of TabPFN",
+   "Best Use of Tinker",
+   "Best Use of Arduino",
+   "Best Use of DigitalOcean",
+   "Best Use of Gemma",
+   "Best Use of Auth0 for AI Agents",
+   "Best Use of Backboard",
+   "Best Use of Browserbase",
+   "Best Use of ElevenLabs",
+   "Best Use of Entire",
+   "Best Use of GitHub Copilot",
+   "Best Use of Mastra",
+   "Best Use of MongoDB Atlas",
+   "Best Use of Sentry Agent Tracing",
+   "Best Use of SerpApi",
+   "Best Use of Temporal",
+   "Best Use of Tiger Data",
+   "Best Use of Ultramarine (Paper Instruments)",
+   "Best Use of a .tech Domain"
+  ]
+ },
+ "patterns": [
+  "A measured result in the title (2 of 3, e.g. “82% vs 79%”)",
+  "Opens with one personal, everyday annoyance: a snoozed alarm, a confusing form",
+  "A working demo link and a repo link (all 3 winners)",
+  "A video demo of the real thing (2 of 3)",
+  "A specific “why open innovation matters” section, not a slogan"
+ ],
+ "winner_stats": {
+  "winners": 3,
+  "pct_title_with_number": 67,
+  "avg_words": 1973.7,
+  "avg_images": 5.0,
+  "pct_with_video": 67,
+  "pct_with_demo_link": 100,
+  "pct_with_repo_link": 100
+ },
+ "winnerStats": {
+  "winners": 3,
+  "pct_title_with_number": 67,
+  "avg_words": 1973.7,
+  "avg_images": 5.0,
+  "pct_with_video": 67,
+  "pct_with_demo_link": 100,
+  "pct_with_repo_link": 100
+ },
+ "winners": [
+  {
+   "title": "The laziest way to pick a 2027 health plan beat my model (82% vs 79%). So I built Second Look to tell you when lazy is safe",
+   "url": "https://dev.to/hotragn/the-laziest-way-to-pick-a-2027-health-plan-beat-my-model-82-vs-79-so-i-built-second-look-to-a29"
+  },
+  {
+   "title": "AccessPath: Clearer Forms, One Question at a Time",
+   "url": "https://dev.to/zedaina/the-internet-is-open-to-everyone-filling-out-its-forms-isnt-18l5"
+  },
+  {
+   "title": "My alarm won't let me snooze if I'd be late",
+   "url": "https://dev.to/elias-shieh/my-alarm-wont-let-me-snooze-if-id-be-late-42p0"
+  }
+ ],
+ "sources": [
+  {
+   "label": "Challenge: Join the Hacktoberfest Open-Source AI Challenge: Slow and Steady! $2,850 in Prizes Across 21 Winners.",
+   "url": "https://dev.to/devteam/join-the-hacktoberfest-open-source-ai-challenge-slow-and-steady-2850-in-prizes-across-21-3iee",
+   "chars": 10864
+  },
+  {
+   "label": "Winners: Congrats to the Hacktoberfest Open-Source AI Challenge Week 3: Slow and Steady Winners!",
+   "url": "https://dev.to/devteam/congrats-to-the-hacktoberfest-open-source-ai-challenge-week-3-slow-and-steady-winners-3e4a",
+   "chars": 5188
+  },
+  {
+   "label": "Winning entry: The laziest way to pick a 2027 health plan beat my model (82% vs 79%). So I built Second Look to tell you when lazy is safe",
+   "url": "https://dev.to/hotragn/the-laziest-way-to-pick-a-2027-health-plan-beat-my-model-82-vs-79-so-i-built-second-look-to-a29",
+   "chars": 1500
+  },
+  {
+   "label": "Winning entry: AccessPath: Clearer Forms, One Question at a Time",
+   "url": "https://dev.to/zedaina/the-internet-is-open-to-everyone-filling-out-its-forms-isnt-18l5",
+   "chars": 1500
+  },
+  {
+   "label": "Winning entry: My alarm won't let me snooze if I'd be late",
+   "url": "https://dev.to/elias-shieh/my-alarm-wont-let-me-snooze-if-id-be-late-42p0",
+   "chars": 1500
+  }
+ ],
+ "winners_url": "https://dev.to/devteam/congrats-to-the-hacktoberfest-open-source-ai-challenge-week-3-slow-and-steady-winners-3e4a",
+ "winnersUrl": "https://dev.to/devteam/congrats-to-the-hacktoberfest-open-source-ai-challenge-week-3-slow-and-steady-winners-3e4a",
+ "ideas": [
+  {
+   "id": "demo-idea-1",
+   "text": "Receipt Sloth: photograph my receipts once a week; a local Gemma model reads them, files them into a spreadsheet and flags the ones I can expense.",
+   "starred": true,
+   "from": "mine",
+   "judged": {
+    "idea": "Receipt Sloth: photograph my receipts once a week; a local Gemma model reads them, files them into a spreadsheet and flags the ones I can expense.",
+    "overall": 78,
+    "criteria": [
+     {
+      "name": "Originality",
+      "score": 7,
+      "verdict": "Receipt scanners exist; flagging what you can expense is the fresh part."
+     },
+     {
+      "name": "Theme fit",
+      "score": 9,
+      "verdict": "Lazy, local, private: the brief in one sentence."
+     },
+     {
+      "name": "Buildability before the deadline",
+      "score": 8,
+      "verdict": "A photo-to-spreadsheet loop is a weekend, not a month."
+     },
+     {
+      "name": "Partner-category fit",
+      "score": 8,
+      "verdict": "A natural fit for Best Use of Gemma."
+     }
+    ],
+    "verdict": "Dull on paper, which is exactly why a measured result will make it shine.",
+    "how_it_could_win": "Time a month of receipts by hand vs with the tool and lead the post with both numbers; enter Best Use of Gemma.",
+    "partners": [
+     "Best Use of Gemma"
+    ]
+   }
+  },
+  {
+   "id": "demo-idea-2",
+   "text": "A lazy standup bot that reads my git log overnight and writes tomorrow's standup update for me.",
+   "starred": false,
+   "from": "mine",
+   "judged": {
+    "idea": "A lazy standup bot that reads my git log overnight and writes tomorrow's standup update for me.",
+    "overall": 64,
+    "criteria": [
+     {
+      "name": "Originality",
+      "score": 5,
+      "verdict": "Standup bots are the most common lazy-dev project there is."
+     },
+     {
+      "name": "Theme fit",
+      "score": 8,
+      "verdict": "It does save effort, every single morning."
+     },
+     {
+      "name": "Buildability before the deadline",
+      "score": 9,
+      "verdict": "A git log and a prompt: very buildable."
+     },
+     {
+      "name": "Partner-category fit",
+      "score": 5,
+      "verdict": "Little partner tech to show off."
+     }
+    ],
+    "verdict": "Easy to build, hard to stand out. The jury has seen this one before breakfast.",
+    "how_it_could_win": "Only if it does something no other standup bot does, like flagging what you forgot to mention.",
+    "partners": []
+   }
+  },
+  {
+   "id": "demo-idea-3",
+   "text": "An offline podcast skimmer that turns each new episode into three bullet points before my commute.",
+   "starred": false,
+   "from": "mine",
+   "judged": {
+    "idea": "An offline podcast skimmer that turns each new episode into three bullet points before my commute.",
+    "overall": 55,
+    "criteria": [
+     {
+      "name": "Originality",
+      "score": 5,
+      "verdict": "Podcast summaries are everywhere."
+     },
+     {
+      "name": "Theme fit",
+      "score": 7,
+      "verdict": "Saves time, though listening is the point of a podcast."
+     },
+     {
+      "name": "Buildability before the deadline",
+      "score": 6,
+      "verdict": "Local speech-to-text on long audio is slow; tight for a week."
+     },
+     {
+      "name": "Partner-category fit",
+      "score": 6,
+      "verdict": "Could fit ElevenLabs, but only loosely."
+     }
+    ],
+    "verdict": "A summary of something meant to be enjoyed. Objection, mildly.",
+    "how_it_could_win": "Pick one painful niche (3-hour council meetings?) and prove the time saved.",
+    "partners": [
+     "Best Use of ElevenLabs"
+    ]
+   }
+  }
+ ],
+ "generated": [
+  {
+   "title": "Drawer Oracle",
+   "pitch": "Photograph your junk drawer once; a local vision model tells you what's in it forever, so you never rummage again.",
+   "partners": [
+    "Best Use of Gemma"
+   ],
+   "why_original": "Everyone sorts files; nobody sorts the physical drawer."
+  },
+  {
+   "title": "Reply Later, Properly",
+   "pitch": "A local model drafts kind replies to the messages you've been avoiding, ready when you finally feel like it.",
+   "partners": [
+    "Best Use of Gemma",
+    "Best Use of Temporal"
+   ],
+   "why_original": "Summaries are common; patient, delayed replies are not."
+  },
+  {
+   "title": "The Plant Sloth",
+   "pitch": "An Arduino moisture sensor and a tiny local model water your plants and only bother you when it matters.",
+   "partners": [
+    "Best Use of Arduino",
+    "Best Use of Gemma"
+   ],
+   "why_original": "Hardware plus open models stands out in a field of chat apps."
+  }
+ ],
+ "chosenIdeaId": "demo-idea-1",
+ "verdicts": [
+  {
+   "id": "demo-v1",
+   "mode": "hackathon",
+   "demo": true,
+   "overall": 52,
+   "expression": "grudging",
+   "criteria": [
+    {
+     "name": "Writing Quality",
+     "score": 4,
+     "verdict": "Three paragraphs of architecture before the reader learns what it saves them.",
+     "evidence_quote": "Receipt Sloth uses a local multimodal model with a FastAPI backend",
+     "supported": true
+    },
+    {
+     "name": "Relevance to the Prompt and Theme",
+     "score": 7,
+     "verdict": "Local and lazy: squarely on theme.",
+     "evidence_quote": "you never have to type a receipt again",
+     "supported": true
+    },
+    {
+     "name": "Creativity",
+     "score": 5,
+     "verdict": "Receipt scanners exist; nothing yet says why yours is different.",
+     "evidence_quote": null,
+     "supported": false
+    },
+    {
+     "name": "Technical Execution",
+     "score": 6,
+     "verdict": "It runs, but the post never shows it running.",
+     "evidence_quote": "Run it with docker compose up",
+     "supported": true
+    },
+    {
+     "name": "Use of Partner Technology (optional)",
+     "score": 6,
+     "verdict": "Gemma does the reading, and the code proves it.",
+     "evidence_quote": "a local Gemma model reads each photo",
+     "supported": true
+    }
+   ],
+   "why_not_winning": [
+    "Every winner had a demo link; you have none.",
+    "Winners opened with a personal annoyance. You open with your stack.",
+    "Two of three winners put a measured result in the title. Your title is a name."
+   ],
+   "top_fixes": [
+    "Open with the moment you lost an evening to a shoebox of receipts.",
+    "Add a demo link and a 20-second video of it filing one receipt.",
+    "Time yourself doing a month of receipts by hand, then with Receipt Sloth, and put both numbers in the title."
+   ],
+   "better_title": "Receipt Sloth: a local model files my receipts while I nap",
+   "better_opening": "Every month I lose an evening to a shoebox of receipts. So I taught a local Gemma model to read them, file them into a spreadsheet and flag the ones I can expense, all while my laptop is offline.",
+   "count_says": "Mortal, you have built a competent sloth and written about it like a tax form. Three fixes.",
+   "voice_line": "Mortal, you have built a competent sloth and written about it like a tax form. Three fixes. Overall: 52 out of one hundred.",
+   "facts": {
+    "word_count": 640,
+    "reading_time_min": 3,
+    "title_has_number": false,
+    "images": 1,
+    "videos": 0,
+    "has_demo_link": false,
+    "has_repo_link": true,
+    "has_open_innovation_section": false,
+    "headings": 4,
+    "code_blocks": 2,
+    "repo_commits": 11,
+    "repo_has_ci": false,
+    "repo_languages": [
+     "Python"
+    ],
+    "repo_has_readme": true,
+    "repo_files_scanned": 9
+   },
+   "partners": [
+    {
+     "partner": "Gemma",
+     "claim": "Best Use of Gemma",
+     "status": "backed",
+     "evidence": [
+      "'gemma3:4b' in src/reader.py",
+      "dependency ollama in requirements.txt"
+     ]
+    }
+   ],
+   "overrules": [],
+   "patterns": [
+    "A measured result in the title (2 of 3, e.g. “82% vs 79%”)",
+    "Opens with one personal, everyday annoyance: a snoozed alarm, a confusing form",
+    "A working demo link and a repo link (all 3 winners)",
+    "A video demo of the real thing (2 of 3)",
+    "A specific “why open innovation matters” section, not a slogan"
+   ],
+   "winner_stats": {
+    "winners": 3,
+    "pct_title_with_number": 67,
+    "avg_words": 1973.7,
+    "avg_images": 5.0,
+    "pct_with_video": 67,
+    "pct_with_demo_link": 100,
+    "pct_with_repo_link": 100
+   },
+   "winners": [
+    {
+     "title": "The laziest way to pick a 2027 health plan beat my model (82% vs 79%). So I built Second Look to tell you when lazy is safe",
+     "url": "https://dev.to/hotragn/the-laziest-way-to-pick-a-2027-health-plan-beat-my-model-82-vs-79-so-i-built-second-look-to-a29"
+    },
+    {
+     "title": "AccessPath: Clearer Forms, One Question at a Time",
+     "url": "https://dev.to/zedaina/the-internet-is-open-to-everyone-filling-out-its-forms-isnt-18l5"
+    },
+    {
+     "title": "My alarm won't let me snooze if I'd be late",
+     "url": "https://dev.to/elias-shieh/my-alarm-wont-let-me-snooze-if-id-be-late-42p0"
+    }
+   ],
+   "brief": {
+    "name": "Hacktoberfest Open-Source AI Challenge: Week 3",
+    "theme": "Build something with open-weight models or open-source AI that rewards laziness.",
+    "deadline": "October 25 at 11:59 PM PDT",
+    "deadline_iso": "2026-10-25T23:59:00-07:00",
+    "criteria": [
+     {
+      "name": "Writing Quality",
+      "description": "Is the post clear and engaging? Does it explain what you built, who it's for, and why open innovation matters?",
+      "weight": "weighted most heavily",
+      "weight_pct": 50
+     },
+     {
+      "name": "Relevance to the Prompt and Theme",
+      "description": "Is open-source AI or open-weight models at the core of the project? Does it genuinely save effort, help someone relax, or make life easier?",
+      "weight": null,
+      "weight_pct": 20
+     },
+     {
+      "name": "Creativity",
+      "description": "Is it an original idea, or a fresh take on a familiar problem?",
+      "weight": null,
+      "weight_pct": 15
+     },
+     {
+      "name": "Technical Execution",
+      "description": "Does it work, and is it well built?",
+      "weight": null,
+      "weight_pct": 10
+     },
+     {
+      "name": "Use of Partner Technology (optional)",
+      "description": "If you're entering a partner category, does the project use that technology in a meaningful way?",
+      "weight": null,
+      "weight_pct": 5
+     }
+    ],
+    "prize_categories": [
+     "Best Use of Render",
+     "Best Use of TabPFN",
+     "Best Use of Tinker",
+     "Best Use of Arduino",
+     "Best Use of DigitalOcean",
+     "Best Use of Gemma",
+     "Best Use of Auth0 for AI Agents",
+     "Best Use of Backboard",
+     "Best Use of Browserbase",
+     "Best Use of ElevenLabs",
+     "Best Use of Entire",
+     "Best Use of GitHub Copilot",
+     "Best Use of Mastra",
+     "Best Use of MongoDB Atlas",
+     "Best Use of Sentry Agent Tracing",
+     "Best Use of SerpApi",
+     "Best Use of Temporal",
+     "Best Use of Tiger Data",
+     "Best Use of Ultramarine (Paper Instruments)",
+     "Best Use of a .tech Domain"
+    ]
+   },
+   "sources": [
+    {
+     "label": "Your draft (pasted)",
+     "url": null,
+     "chars": 3840
+    }
+   ],
+   "submission": {
+    "title": "Receipt Sloth",
+    "url": null
+   },
+   "judged_at": "2026-10-22T19:40:00+00:00"
+  },
+  {
+   "id": "demo-v2",
+   "mode": "hackathon",
+   "demo": true,
+   "overall": 68,
+   "expression": "grudging",
+   "criteria": [
+    {
+     "name": "Writing Quality",
+     "score": 6,
+     "verdict": "The new opening lands; the middle still reads like a changelog.",
+     "evidence_quote": "Every month I lose an evening to a shoebox of receipts",
+     "supported": true
+    },
+    {
+     "name": "Relevance to the Prompt and Theme",
+     "score": 8,
+     "verdict": "Lazy, local and private: exactly the brief.",
+     "evidence_quote": "Your receipts never leave your laptop",
+     "supported": true
+    },
+    {
+     "name": "Creativity",
+     "score": 6,
+     "verdict": "Flagging expensable receipts is a genuinely useful twist.",
+     "evidence_quote": "flag the ones I can expense",
+     "supported": true
+    },
+    {
+     "name": "Technical Execution",
+     "score": 7,
+     "verdict": "The GIF proves it works end to end.",
+     "evidence_quote": "the GIF shows a crumpled cab receipt becoming a spreadsheet row",
+     "supported": true
+    },
+    {
+     "name": "Use of Partner Technology (optional)",
+     "score": 7,
+     "verdict": "Gemma is central, and the post says why.",
+     "evidence_quote": "a local Gemma model reads each photo",
+     "supported": true
+    }
+   ],
+   "why_not_winning": [
+    "No number anywhere. “Saves time” is not a result; minutes are.",
+    "The open-innovation section is one sentence long.",
+    "The winners' posts each had one moment of delight; yours has none yet."
+   ],
+   "top_fixes": [
+    "Time a month of receipts by hand vs Receipt Sloth and lead with the two numbers.",
+    "Expand “why open” into a short section: privacy, offline, no subscription, with one concrete example.",
+    "Cut the dependency list from the middle of the post; link the README instead."
+   ],
+   "better_title": "I spent 47 minutes a month on receipts. A local Gemma now does it in 4.",
+   "better_opening": "Every month I lost 47 minutes to a shoebox of receipts. Now a local Gemma model reads them overnight and files them into my spreadsheet in 4 minutes, and my receipts never leave my laptop.",
+   "count_says": "Grudging approval, mortal. You found your story. Now find your number.",
+   "voice_line": "Grudging approval, mortal. You found your story. Now find your number. Overall: 68 out of one hundred.",
+   "facts": {
+    "word_count": 1020,
+    "reading_time_min": 4,
+    "title_has_number": false,
+    "images": 3,
+    "videos": 1,
+    "has_demo_link": true,
+    "has_repo_link": true,
+    "has_open_innovation_section": true,
+    "headings": 7,
+    "code_blocks": 2,
+    "repo_commits": 24,
+    "repo_has_ci": true,
+    "repo_languages": [
+     "Python",
+     "TypeScript"
+    ],
+    "repo_has_readme": true,
+    "repo_files_scanned": 16
+   },
+   "partners": [
+    {
+     "partner": "Gemma",
+     "claim": "Best Use of Gemma",
+     "status": "backed",
+     "evidence": [
+      "'gemma3:4b' in src/reader.py",
+      "dependency ollama in requirements.txt"
+     ]
+    }
+   ],
+   "overrules": [],
+   "patterns": [
+    "A measured result in the title (2 of 3, e.g. “82% vs 79%”)",
+    "Opens with one personal, everyday annoyance: a snoozed alarm, a confusing form",
+    "A working demo link and a repo link (all 3 winners)",
+    "A video demo of the real thing (2 of 3)",
+    "A specific “why open innovation matters” section, not a slogan"
+   ],
+   "winner_stats": {
+    "winners": 3,
+    "pct_title_with_number": 67,
+    "avg_words": 1973.7,
+    "avg_images": 5.0,
+    "pct_with_video": 67,
+    "pct_with_demo_link": 100,
+    "pct_with_repo_link": 100
+   },
+   "winners": [
+    {
+     "title": "The laziest way to pick a 2027 health plan beat my model (82% vs 79%). So I built Second Look to tell you when lazy is safe",
+     "url": "https://dev.to/hotragn/the-laziest-way-to-pick-a-2027-health-plan-beat-my-model-82-vs-79-so-i-built-second-look-to-a29"
+    },
+    {
+     "title": "AccessPath: Clearer Forms, One Question at a Time",
+     "url": "https://dev.to/zedaina/the-internet-is-open-to-everyone-filling-out-its-forms-isnt-18l5"
+    },
+    {
+     "title": "My alarm won't let me snooze if I'd be late",
+     "url": "https://dev.to/elias-shieh/my-alarm-wont-let-me-snooze-if-id-be-late-42p0"
+    }
+   ],
+   "brief": {
+    "name": "Hacktoberfest Open-Source AI Challenge: Week 3",
+    "theme": "Build something with open-weight models or open-source AI that rewards laziness.",
+    "deadline": "October 25 at 11:59 PM PDT",
+    "deadline_iso": "2026-10-25T23:59:00-07:00",
+    "criteria": [
+     {
+      "name": "Writing Quality",
+      "description": "Is the post clear and engaging? Does it explain what you built, who it's for, and why open innovation matters?",
+      "weight": "weighted most heavily",
+      "weight_pct": 50
+     },
+     {
+      "name": "Relevance to the Prompt and Theme",
+      "description": "Is open-source AI or open-weight models at the core of the project? Does it genuinely save effort, help someone relax, or make life easier?",
+      "weight": null,
+      "weight_pct": 20
+     },
+     {
+      "name": "Creativity",
+      "description": "Is it an original idea, or a fresh take on a familiar problem?",
+      "weight": null,
+      "weight_pct": 15
+     },
+     {
+      "name": "Technical Execution",
+      "description": "Does it work, and is it well built?",
+      "weight": null,
+      "weight_pct": 10
+     },
+     {
+      "name": "Use of Partner Technology (optional)",
+      "description": "If you're entering a partner category, does the project use that technology in a meaningful way?",
+      "weight": null,
+      "weight_pct": 5
+     }
+    ],
+    "prize_categories": [
+     "Best Use of Render",
+     "Best Use of TabPFN",
+     "Best Use of Tinker",
+     "Best Use of Arduino",
+     "Best Use of DigitalOcean",
+     "Best Use of Gemma",
+     "Best Use of Auth0 for AI Agents",
+     "Best Use of Backboard",
+     "Best Use of Browserbase",
+     "Best Use of ElevenLabs",
+     "Best Use of Entire",
+     "Best Use of GitHub Copilot",
+     "Best Use of Mastra",
+     "Best Use of MongoDB Atlas",
+     "Best Use of Sentry Agent Tracing",
+     "Best Use of SerpApi",
+     "Best Use of Temporal",
+     "Best Use of Tiger Data",
+     "Best Use of Ultramarine (Paper Instruments)",
+     "Best Use of a .tech Domain"
+    ]
+   },
+   "sources": [
+    {
+     "label": "Your draft (pasted)",
+     "url": null,
+     "chars": 6120
+    }
+   ],
+   "submission": {
+    "title": "Receipt Sloth: a local model files my receipts while I nap",
+    "url": null
+   },
+   "judged_at": "2026-10-24T21:15:00+00:00"
+  },
+  {
+   "id": "demo-v3",
+   "mode": "hackathon",
+   "demo": true,
+   "overall": 81,
+   "expression": "impressed",
+   "criteria": [
+    {
+     "name": "Writing Quality",
+     "score": 8,
+     "verdict": "A measured claim up front and a clean arc: problem, proof, payoff.",
+     "evidence_quote": "I spent 47 minutes a month on receipts",
+     "supported": true
+    },
+    {
+     "name": "Relevance to the Prompt and Theme",
+     "score": 9,
+     "verdict": "The laziest possible workflow, run entirely on open weights.",
+     "evidence_quote": "my receipts never leave my laptop",
+     "supported": true
+    },
+    {
+     "name": "Creativity",
+     "score": 7,
+     "verdict": "Familiar problem, fresh angle: it decides what you can expense.",
+     "evidence_quote": "flag the ones I can expense",
+     "supported": true
+    },
+    {
+     "name": "Technical Execution",
+     "score": 8,
+     "verdict": "Works offline, has CI, and the demo is real.",
+     "evidence_quote": "a CI workflow runs the parser against 40 sample receipts",
+     "supported": true
+    },
+    {
+     "name": "Use of Partner Technology (optional)",
+     "score": 8,
+     "verdict": "Gemma does the hard part, and you show the prompt that makes it work.",
+     "evidence_quote": "Here is the exact prompt Gemma gets for each receipt",
+     "supported": true
+    }
+   ],
+   "why_not_winning": [
+    "Close. The overall winner made its number the hook of the very first line; yours arrives in line two.",
+    "No video above the fold: two of three winners had one."
+   ],
+   "top_fixes": [
+    "Move the 47-to-4 minutes comparison into the very first sentence.",
+    "Put the 20-second video directly under the title.",
+    "End with one honest limitation (handwritten receipts) and what you'd try next."
+   ],
+   "better_title": "47 Minutes to 4: A Local Gemma Files My Receipts While I Nap",
+   "better_opening": "Every month I lost 47 minutes to a shoebox of receipts. Now a local Gemma model reads them overnight and files them in 4, and my receipts never leave my laptop.",
+   "count_says": "I came prepared to object, mortal, and find myself merely advising. This one could win a category.",
+   "voice_line": "I came prepared to object, mortal, and find myself merely advising. This one could win a category. Overall: 81 out of one hundred.",
+   "facts": {
+    "word_count": 1380,
+    "reading_time_min": 6,
+    "title_has_number": true,
+    "images": 4,
+    "videos": 1,
+    "has_demo_link": true,
+    "has_repo_link": true,
+    "has_open_innovation_section": true,
+    "headings": 8,
+    "code_blocks": 3,
+    "repo_commits": 37,
+    "repo_has_ci": true,
+    "repo_languages": [
+     "Python",
+     "TypeScript"
+    ],
+    "repo_has_readme": true,
+    "repo_files_scanned": 18
+   },
+   "partners": [
+    {
+     "partner": "Gemma",
+     "claim": "Best Use of Gemma",
+     "status": "backed",
+     "evidence": [
+      "'gemma3:4b' in src/reader.py",
+      "dependency ollama in requirements.txt"
+     ]
+    }
+   ],
+   "overrules": [],
+   "patterns": [
+    "A measured result in the title (2 of 3, e.g. “82% vs 79%”)",
+    "Opens with one personal, everyday annoyance: a snoozed alarm, a confusing form",
+    "A working demo link and a repo link (all 3 winners)",
+    "A video demo of the real thing (2 of 3)",
+    "A specific “why open innovation matters” section, not a slogan"
+   ],
+   "winner_stats": {
+    "winners": 3,
+    "pct_title_with_number": 67,
+    "avg_words": 1973.7,
+    "avg_images": 5.0,
+    "pct_with_video": 67,
+    "pct_with_demo_link": 100,
+    "pct_with_repo_link": 100
+   },
+   "winners": [
+    {
+     "title": "The laziest way to pick a 2027 health plan beat my model (82% vs 79%). So I built Second Look to tell you when lazy is safe",
+     "url": "https://dev.to/hotragn/the-laziest-way-to-pick-a-2027-health-plan-beat-my-model-82-vs-79-so-i-built-second-look-to-a29"
+    },
+    {
+     "title": "AccessPath: Clearer Forms, One Question at a Time",
+     "url": "https://dev.to/zedaina/the-internet-is-open-to-everyone-filling-out-its-forms-isnt-18l5"
+    },
+    {
+     "title": "My alarm won't let me snooze if I'd be late",
+     "url": "https://dev.to/elias-shieh/my-alarm-wont-let-me-snooze-if-id-be-late-42p0"
+    }
+   ],
+   "brief": {
+    "name": "Hacktoberfest Open-Source AI Challenge: Week 3",
+    "theme": "Build something with open-weight models or open-source AI that rewards laziness.",
+    "deadline": "October 25 at 11:59 PM PDT",
+    "deadline_iso": "2026-10-25T23:59:00-07:00",
+    "criteria": [
+     {
+      "name": "Writing Quality",
+      "description": "Is the post clear and engaging? Does it explain what you built, who it's for, and why open innovation matters?",
+      "weight": "weighted most heavily",
+      "weight_pct": 50
+     },
+     {
+      "name": "Relevance to the Prompt and Theme",
+      "description": "Is open-source AI or open-weight models at the core of the project? Does it genuinely save effort, help someone relax, or make life easier?",
+      "weight": null,
+      "weight_pct": 20
+     },
+     {
+      "name": "Creativity",
+      "description": "Is it an original idea, or a fresh take on a familiar problem?",
+      "weight": null,
+      "weight_pct": 15
+     },
+     {
+      "name": "Technical Execution",
+      "description": "Does it work, and is it well built?",
+      "weight": null,
+      "weight_pct": 10
+     },
+     {
+      "name": "Use of Partner Technology (optional)",
+      "description": "If you're entering a partner category, does the project use that technology in a meaningful way?",
+      "weight": null,
+      "weight_pct": 5
+     }
+    ],
+    "prize_categories": [
+     "Best Use of Render",
+     "Best Use of TabPFN",
+     "Best Use of Tinker",
+     "Best Use of Arduino",
+     "Best Use of DigitalOcean",
+     "Best Use of Gemma",
+     "Best Use of Auth0 for AI Agents",
+     "Best Use of Backboard",
+     "Best Use of Browserbase",
+     "Best Use of ElevenLabs",
+     "Best Use of Entire",
+     "Best Use of GitHub Copilot",
+     "Best Use of Mastra",
+     "Best Use of MongoDB Atlas",
+     "Best Use of Sentry Agent Tracing",
+     "Best Use of SerpApi",
+     "Best Use of Temporal",
+     "Best Use of Tiger Data",
+     "Best Use of Ultramarine (Paper Instruments)",
+     "Best Use of a .tech Domain"
+    ]
+   },
+   "sources": [
+    {
+     "label": "Your draft (pasted)",
+     "url": null,
+     "chars": 8280
+    }
+   ],
+   "submission": {
+    "title": "I spent 47 minutes a month on receipts. A local Gemma now does it in 4.",
+    "url": null
+   },
+   "judged_at": "2026-10-25T22:05:00+00:00"
+  }
+ ],
+ "submission": {
+  "text": "",
+  "mode": "hackathon"
+ },
+ "chat": [
+  {
+   "role": "user",
+   "content": "What does this jury care about most?",
+   "at": "2026-10-21T10:02:00+00:00"
+  },
+  {
+   "role": "fangs",
+   "content": "Writing, mortal. The brief says it plainly: writing quality is weighted most heavily. Then relevance to the theme, then creativity, and only then technical execution.\n\nSo: a clear story of one annoyance, a measured result, a demo, and an honest “why open innovation matters” section. A brilliant build with a dull post loses to a modest build told well.",
+   "at": "2026-10-21T10:02:40+00:00"
+  },
+  {
+   "role": "user",
+   "content": "Which idea should I pick?",
+   "at": "2026-10-21T10:20:00+00:00"
+  },
+  {
+   "role": "fangs",
+   "content": "Receipt Sloth. It scored 78 to the standup bot's 64, it fits Best Use of Gemma, and it has a number hiding in it: minutes per month, before and after. Time yourself this week. That number is your title.",
+   "at": "2026-10-21T10:20:35+00:00"
+  },
+  {
+   "role": "user",
+   "content": "Fix my weakest criterion",
+   "at": "2026-10-24T21:20:00+00:00"
+  },
+  {
+   "role": "fangs",
+   "content": "Writing Quality, at 6 of 10, and it carries half the weight. Three moves:\n1. First line: the 47 minutes. Not the stack.\n2. One GIF under the title: a crumpled receipt becoming a row.\n3. Turn your one-line “why open” into four sentences: offline, private, free forever, and the moment that mattered.",
+   "at": "2026-10-24T21:20:50+00:00"
+  }
+ ],
+ "result": {
+  "status": "lost",
+  "winnersUrl": "https://dev.to/devteam/congrats-to-the-hacktoberfest-open-source-ai-challenge-week-3-slow-and-steady-winners-3e4a"
+ },
+ "debrief": {
+  "result": "lost",
+  "winners_did": [
+   "Made a measured claim the hook of the title itself: “82% vs 79%” is impossible to scroll past",
+   "Opened with one specific moment of pain (a snoozed alarm, a confusing form) before any architecture",
+   "Showed the real thing working in a video, not only screenshots",
+   "Explained exactly where the open model beat a closed one, with a concrete example"
+  ],
+  "you_did_well": [
+   "Your final title carried a measured result: 47 minutes down to 4",
+   "Your “why open innovation matters” section was specific: receipts never leave your laptop",
+   "A live demo, a repo and a CI workflow: the jury could check everything"
+  ],
+  "lessons": [
+   "Put the measured result in the title from the very first draft",
+   "Open with one specific moment of pain, before any architecture",
+   "Record a 30-second video of the real thing working"
+  ],
+  "count_says": "You lost to sharper storytellers, not better builders. Learn the craft, mortal, and the next jury is yours.",
+  "winners": [
+   {
+    "title": "The laziest way to pick a 2027 health plan beat my model (82% vs 79%). So I built Second Look to tell you when lazy is safe",
+    "url": "https://dev.to/hotragn/the-laziest-way-to-pick-a-2027-health-plan-beat-my-model-82-vs-79-so-i-built-second-look-to-a29"
+   },
+   {
+    "title": "AccessPath: Clearer Forms, One Question at a Time",
+    "url": "https://dev.to/zedaina/the-internet-is-open-to-everyone-filling-out-its-forms-isnt-18l5"
+   },
+   {
+    "title": "My alarm won't let me snooze if I'd be late",
+    "url": "https://dev.to/elias-shieh/my-alarm-wont-let-me-snooze-if-id-be-late-42p0"
+   }
+  ],
+  "sources": [
+   {
+    "label": "Winners: Congrats to the Hacktoberfest Open-Source AI Challenge Week 3: Slow and Steady Winners!",
+    "url": "https://dev.to/devteam/congrats-to-the-hacktoberfest-open-source-ai-challenge-week-3-slow-and-steady-winners-3e4a",
+    "chars": 5188
+   },
+   {
+    "label": "Winning entry: The laziest way to pick a 2027 health plan beat my model (82% vs 79%). So I built Second Look to tell you when lazy is safe",
+    "url": "https://dev.to/hotragn/the-laziest-way-to-pick-a-2027-health-plan-beat-my-model-82-vs-79-so-i-built-second-look-to-a29",
+    "chars": 1500
+   },
+   {
+    "label": "Winning entry: AccessPath: Clearer Forms, One Question at a Time",
+    "url": "https://dev.to/zedaina/the-internet-is-open-to-everyone-filling-out-its-forms-isnt-18l5",
+    "chars": 1500
+   },
+   {
+    "label": "Winning entry: My alarm won't let me snooze if I'd be late",
+    "url": "https://dev.to/elias-shieh/my-alarm-wont-let-me-snooze-if-id-be-late-42p0",
+    "chars": 1500
+   }
+  ],
+  "debriefed_at": "2026-10-30T21:30:00+00:00"
+ },
+ "demo": true,
+ "judged_ideas": {
+  "ideas": [
+   {
+    "idea": "Receipt Sloth: photograph my receipts once a week; a local Gemma model reads them, files them into a spreadsheet and flags the ones I can expense.",
+    "overall": 78,
+    "criteria": [
+     {
+      "name": "Originality",
+      "score": 7,
+      "verdict": "Receipt scanners exist; flagging what you can expense is the fresh part."
+     },
+     {
+      "name": "Theme fit",
+      "score": 9,
+      "verdict": "Lazy, local, private: the brief in one sentence."
+     },
+     {
+      "name": "Buildability before the deadline",
+      "score": 8,
+      "verdict": "A photo-to-spreadsheet loop is a weekend, not a month."
+     },
+     {
+      "name": "Partner-category fit",
+      "score": 8,
+      "verdict": "A natural fit for Best Use of Gemma."
+     }
+    ],
+    "verdict": "Dull on paper, which is exactly why a measured result will make it shine.",
+    "how_it_could_win": "Time a month of receipts by hand vs with the tool and lead the post with both numbers; enter Best Use of Gemma.",
+    "partners": [
+     "Best Use of Gemma"
+    ]
+   },
+   {
+    "idea": "A lazy standup bot that reads my git log overnight and writes tomorrow's standup update for me.",
+    "overall": 64,
+    "criteria": [
+     {
+      "name": "Originality",
+      "score": 5,
+      "verdict": "Standup bots are the most common lazy-dev project there is."
+     },
+     {
+      "name": "Theme fit",
+      "score": 8,
+      "verdict": "It does save effort, every single morning."
+     },
+     {
+      "name": "Buildability before the deadline",
+      "score": 9,
+      "verdict": "A git log and a prompt: very buildable."
+     },
+     {
+      "name": "Partner-category fit",
+      "score": 5,
+      "verdict": "Little partner tech to show off."
+     }
+    ],
+    "verdict": "Easy to build, hard to stand out. The jury has seen this one before breakfast.",
+    "how_it_could_win": "Only if it does something no other standup bot does, like flagging what you forgot to mention.",
+    "partners": []
+   },
+   {
+    "idea": "An offline podcast skimmer that turns each new episode into three bullet points before my commute.",
+    "overall": 55,
+    "criteria": [
+     {
+      "name": "Originality",
+      "score": 5,
+      "verdict": "Podcast summaries are everywhere."
+     },
+     {
+      "name": "Theme fit",
+      "score": 7,
+      "verdict": "Saves time, though listening is the point of a podcast."
+     },
+     {
+      "name": "Buildability before the deadline",
+      "score": 6,
+      "verdict": "Local speech-to-text on long audio is slow; tight for a week."
+     },
+     {
+      "name": "Partner-category fit",
+      "score": 6,
+      "verdict": "Could fit ElevenLabs, but only loosely."
+     }
+    ],
+    "verdict": "A summary of something meant to be enjoyed. Objection, mildly.",
+    "how_it_could_win": "Pick one painful niche (3-hour council meetings?) and prove the time saved.",
+    "partners": [
+     "Best Use of ElevenLabs"
+    ]
+   }
+  ],
+  "best": 0
+ },
+ "chat_replies": [
+  {
+   "match": [
+    "care about most",
+    "jury care",
+    "criteria"
+   ],
+   "reply": "Writing, mortal. The brief says it plainly: writing quality is weighted most heavily. Then relevance to the theme, then creativity, and only then technical execution.\n\nSo: a clear story of one annoyance, a measured result, a demo, and an honest “why open innovation matters” section. A brilliant build with a dull post loses to a modest build told well."
+  },
+  {
+   "match": [
+    "which idea",
+    "pick"
+   ],
+   "reply": "Receipt Sloth. It scored 78 to the standup bot's 64, it fits Best Use of Gemma, and it has a number hiding in it: minutes per month, before and after. Time yourself this week. That number is your title."
+  },
+  {
+   "match": [
+    "weakest",
+    "fix my"
+   ],
+   "reply": "Writing Quality, at 6 of 10, and it carries half the weight. Three moves:\n1. First line: the 47 minutes. Not the stack.\n2. One GIF under the title: a crumpled receipt becoming a row.\n3. Turn your one-line “why open” into four sentences: offline, private, free forever, and the moment that mattered."
+  },
+  {
+   "match": [
+    "why did i lose",
+    "lose",
+    "lost"
+   ],
+   "reply": "Because the winners told sharper stories, mortal. Your number arrived in line two; theirs was the title. Your demo was a GIF; theirs was a video of the real thing. Read your three lessons in the sidebar, then go and win Week 4."
+  },
+  {
+   "match": [
+    "similar",
+    "past winners",
+    "too close"
+   ],
+   "reply": "Not too similar. The winners solved alarms, forms and health plans; nobody filed receipts. But you share their best habit only if you lead with a number. Do that, and similarity becomes an advantage."
+  },
+  {
+   "match": [
+    "3 hours",
+    "hours left",
+    "build first",
+    "first"
+   ],
+   "reply": "With three hours left: one, record the 20-second video of it working, now, before anything breaks. Two, put the measured result in the title. Three, write the “why open” section. Stop coding. The jury reads posts, not commits."
+  },
+  {
+   "match": [
+    "title",
+    "rewrite"
+   ],
+   "reply": "“47 Minutes to 4: A Local Gemma Files My Receipts While I Nap.” A number, a model the jury can recognise, and a sloth. Nothing more is needed."
+  }
+ ],
+ "chat_default": "Counsel is in session, mortal, but tonight I recite from memory. Ask about the jury, your ideas, your weakest criterion, or why you lost."
+}

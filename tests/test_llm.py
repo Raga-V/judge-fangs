@@ -8,7 +8,7 @@ from app.config import load_settings
 from app.llm import LLMError, LLMFailed, complete_json, extract_json
 from tests.conftest import llm_reply
 
-SETTINGS = load_settings({"LLM_API_KEY": "k", "LLM_MODEL": "gemma-3-27b-it"})
+SETTINGS = load_settings({"LLM_API_KEY": "k", "LLM_MODEL": "gemma-4-31b-it", "LLM_RETRY_DELAY": "0", "LLM_FALLBACK_MODEL": "gemma-4-26b-a4b-it"})
 
 
 def run(coro):
@@ -57,7 +57,7 @@ def test_single_user_message_no_system_role_no_json_mode():
     body = rec.bodies[0]
     assert [m["role"] for m in body["messages"]] == ["user"]
     assert "response_format" not in body
-    assert body["model"] == "gemma-3-27b-it"
+    assert body["model"] == "gemma-4-31b-it"
 
 
 def test_retry_once_with_the_error_explained():
@@ -102,3 +102,34 @@ def test_local_server_needs_no_key_and_missing_key_means_demo():
     assert load_settings({}).demo_mode is True
     assert load_settings({"LLM_BASE_URL": "http://localhost:11434/v1"}).demo_mode is False
     assert load_settings({"LLM_API_KEY": "k", "DEMO_MODE": "true"}).demo_mode is True
+
+
+def test_thinking_blocks_are_ignored():
+    raw = '<thought>The user wants {"overall": 3}... let me think {nope}</thought>{"overall": 80}'
+    assert extract_json(raw) == {"overall": 80}
+    assert extract_json("<think>{a}</think>\n```json\n{\"x\": 1}\n```") == {"x": 1}
+
+
+def test_a_reply_cut_off_mid_thought_retries_plainly():
+    rec = Recorder(['<thought>I am still thinking about {this', '<thought>done</thought>{"ok": 3}'])
+    assert call(rec) == {"ok": 3}
+    assert len(rec.bodies[1]["messages"]) == 1  # no thinking fed back
+
+
+def test_thinking_headroom_is_added_to_max_tokens():
+    rec = Recorder(['{"ok": true}'])
+    call(rec, max_tokens=500)
+    assert rec.bodies[0]["max_tokens"] == 500 + SETTINGS.llm_thinking_tokens
+
+
+def test_overloaded_provider_falls_back_to_the_second_model():
+    rec = Recorder([httpx.Response(503, json={"error": {"message": "high demand"}}), '{"ok": 4}'])
+    assert call(rec) == {"ok": 4}
+    assert [b["model"] for b in rec.bodies] == ["gemma-4-31b-it", "gemma-4-26b-a4b-it"]
+    assert len(rec.bodies[1]["messages"]) == 1
+
+
+def test_overloaded_twice_is_a_graceful_error():
+    rec = Recorder([httpx.Response(503), httpx.Response(429)])
+    with pytest.raises(LLMFailed, match="overloaded"):
+        call(rec)

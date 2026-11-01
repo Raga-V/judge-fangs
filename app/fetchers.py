@@ -217,6 +217,21 @@ class Fetcher:
 
     # ---------------- search ----------------
 
+    async def serp_first(self, query: str, any_dev: bool = False) -> str | None:
+        """First dev.to result: any DEV page (challenge pages too) if any_dev, else a DEV article."""
+        if not any_dev:
+            return await self.serp_first_dev(query)
+        if not self.settings.serpapi_key:
+            return None
+        with tracing.span("http.client", "serpapi search", **{"judge.source": "search"}):
+            url = "https://serpapi.com/search.json?engine=google&num=10&q=" + quote(query) + "&api_key=" + quote(self.settings.serpapi_key)
+            data = await self.get_json(url)
+        for res in data.get("organic_results") or []:
+            link = res.get("link") or ""
+            if re.match(r"^https://(www\.)?dev\.to/(challenges/[\w-]+|[\w.-]+/[\w-]+)/?$", link):
+                return link
+        return None
+
     async def serp_first_dev(self, query: str) -> str | None:
         if not self.settings.serpapi_key:
             return None

@@ -8,14 +8,14 @@ const STATUS: Record<string, string> = {
 };
 
 const FACT_LABELS: [string, string, (v: unknown) => string][] = [
-  ['word_count', 'Words', (v) => String(v)],
+  ['word_count', 'Words', (v) => Number(v).toLocaleString()],
   ['reading_time_min', 'Reading time', (v) => `${v} min`],
   ['title_has_number', 'Number in the title', (v) => (v ? 'Yes' : 'No')],
   ['images', 'Images', (v) => String(v)],
   ['videos', 'Embedded videos', (v) => String(v)],
   ['has_demo_link', 'Demo link', (v) => (v ? 'Yes' : 'No')],
   ['has_repo_link', 'Repo link', (v) => (v ? 'Yes' : 'No')],
-  ['has_open_innovation_section', '"Why open innovation matters" section', (v) => (v ? 'Yes' : 'No')],
+  ['has_open_innovation_section', '“Why open innovation matters”', (v) => (v ? 'Yes' : 'No')],
   ['repo_commits', 'Repo commits', (v) => String(v)],
   ['repo_has_ci', 'CI workflow', (v) => (v ? 'Yes' : 'No')],
   ['repo_languages', 'Languages', (v) => (Array.isArray(v) ? v.join(', ') : String(v))],
@@ -24,6 +24,7 @@ const FACT_LABELS: [string, string, (v: unknown) => string][] = [
 export default function EvidencePanel({ v }: { v: Verdict }) {
   const facts = v.facts || {};
   const shown = FACT_LABELS.filter(([k]) => facts[k] !== undefined && facts[k] !== null);
+  if (!shown.length && !v.partners?.length && !v.patterns?.length) return null;
   const stats = v.winner_stats;
   return (
     <section className="evidence">
@@ -31,7 +32,7 @@ export default function EvidencePanel({ v }: { v: Verdict }) {
       {shown.length > 0 && (
         <dl className="facts">
           {shown.map(([k, label, fmt]) => (
-            <div key={k}>
+            <div key={k} className={facts[k] === false ? 'no' : facts[k] === true ? 'yes' : ''}>
               <dt>{label}</dt>
               <dd>{fmt(facts[k])}</dd>
             </div>
@@ -45,7 +46,7 @@ export default function EvidencePanel({ v }: { v: Verdict }) {
             {v.partners.map((p) => (
               <li key={p.partner} className={`partner ${p.status}`}>
                 <span className="badge">{STATUS[p.status] || p.status}</span>
-                <strong>{p.partner}</strong> <span className="claim">({p.claim})</span>
+                <strong>{p.partner}</strong> <span className="claim">{p.claim}</span>
                 {p.evidence.length > 0 && <ul className="ev">{p.evidence.map((e) => <li key={e}><code>{e}</code></li>)}</ul>}
               </li>
             ))}

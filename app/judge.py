@@ -78,6 +78,28 @@ def _strs(v: Any, n: int = 400) -> list[str]:
     return [_str(x, n) for x in (v if isinstance(v, list) else []) if _str(x, n)]
 
 
+def _iso(v: Any) -> str | None:
+    """Keep only a parseable ISO 8601 date-time (UTC assumed if no offset)."""
+    s = _str(v, 40)
+    if not s:
+        return None
+    try:
+        d = dt.datetime.fromisoformat(s.replace("Z", "+00:00"))
+    except ValueError:
+        return None
+    if d.tzinfo is None:
+        d = d.replace(tzinfo=dt.timezone.utc)
+    return d.isoformat()
+
+
+def winners_hint(page_text: str, page_url: str | None) -> str | None:
+    """Announcement posts often embed the winners post once results are in."""
+    for m in re.finditer(r"https?://(?:www\.)?dev\.to/[\w.-]+/[\w-]*winner[\w-]*", page_text or "", re.I):
+        if not page_url or normalize_url(m.group(0)) != normalize_url(page_url):
+            return m.group(0)
+    return None
+
+
 def _words(text: str, limit: int) -> str:
     w = text.split()
     return text if len(w) <= limit else " ".join(w[:limit]).rstrip(",;:") + "…"
@@ -127,23 +149,38 @@ Extract the facts from this hackathon or challenge page. Use only what the page 
 PAGE>>>
 
 Reply with ONLY a JSON object:
-{{"name": "challenge name", "theme": "what the theme asks for, at most 40 words",
+{{"name": "challenge name", "theme": "what the theme asks for, in one line of at most 30 words",
   "deadline": "deadline as written on the page, or null",
-  "criteria": [{{"name": "criterion", "description": "short", "weight": "e.g. 30% or null"}}],
-  "prize_categories": ["each prize category name"]}}
+  "deadline_iso": "the deadline as an ISO 8601 date-time with timezone offset, e.g. 2026-10-26T06:59:00+00:00, or null if unclear",
+  "criteria": [{{"name": "criterion", "description": "short", "weight": "as written, e.g. 'weighted most heavily' or '30%', or null", "weight_pct": your best estimate of its share of the score as a number, all criteria summing to 100}}],
+  "prize_categories": ["each prize category name, exactly as written"]}}
 List criteria in order of weight, highest first (page order if no weights are given). Use [] if the page lists none."""
 
     def validate(o: dict) -> dict:
-        crits = [c for c in (o.get("criteria") or []) if isinstance(c, dict) and _str(c.get("name"), 80)]
+        crits = [c for c in (o.get("criteria") or []) if isinstance(c, dict) and _str(c.get("name"), 80)][:8]
+        out = [{"name": _str(c.get("name"), 80), "description": _str(c.get("description"), 240), "weight": _str(c.get("weight"), 40) or None,
+                "weight_pct": _clamp(c.get("weight_pct"), 0, 100, 0)} for c in crits]
+        total = sum(c["weight_pct"] for c in out)
+        if out and not total:  # no estimate: gently descending, page order
+            raw = [len(out) - i for i in range(len(out))]
+            total = sum(raw)
+            for c, r in zip(out, raw):
+                c["weight_pct"] = r
+        for c in out:
+            c["weight_pct"] = round(100 * c["weight_pct"] / total) if total else 0
         return {
             "name": _str(o.get("name"), 120) or page_name,
-            "theme": _str(o.get("theme"), 400),
+            "theme": _str(o.get("theme"), 300),
             "deadline": _str(o.get("deadline"), 80) or None,
-            "criteria": [{"name": _str(c.get("name"), 80), "description": _str(c.get("description"), 240), "weight": _str(c.get("weight"), 20) or None} for c in crits][:8],
-            "prize_categories": _strs(o.get("prize_categories"), 100)[:15],
+            "deadline_iso": _iso(o.get("deadline_iso")),
+            "criteria": out,
+            "prize_categories": _strs(o.get("prize_categories"), 100)[:24],
         }
 
-    brief = await complete_json(ctx.settings, ctx.client, prompt, validate=validate, label="brief", max_tokens=900)
+    brief = await complete_json(ctx.settings, ctx.client, prompt, validate=validate, label="brief", max_tokens=1400)
+    hint = winners_hint(page_text, url)
+    if hint:
+        brief["winners_url_hint"] = hint
     if not brief["criteria"]:
         brief["criteria"] = DEFAULT_CRITERIA
         brief["default"] = True
@@ -154,8 +191,14 @@ List criteria in order of weight, highest first (page order if no weights are gi
     yield {"type": "brief", "brief": brief}
 
 
-async def dig_submission(ctx: Context, url: str | None, text: str | None, sources: list) -> AsyncIterator[dict]:
-    """Yields logs; the last event is {"type": "submission", "submission": {...}, "repo": {...} | None}."""
+async def dig_submission(ctx: Context, url: str | None, text: str | None, sources: list,
+                         repo_url: str | None = None) -> AsyncIterator[dict]:
+    """Any mix of a DEV post URL, a GitHub repo URL and pasted text.
+    Yields logs; the last event is {"type": "submission", "submission": {...}, "repo": {...} | None}."""
+    if not url and repo_url:
+        url, repo_url = repo_url, None
+    if repo_url and not parse_github_url(repo_url):
+        raise FetchError("The repo link must be a GitHub repo, like https://github.com/you/project.")
     sub = {"title": "", "body": "", "url": url, "kind": "text", "tags": []}
     repo = None
     if url and parse_dev_url(url):
@@ -175,7 +218,7 @@ async def dig_submission(ctx: Context, url: str | None, text: str | None, source
         if not sub["title"]:
             first = text.strip().splitlines()[0] if text.strip() else ""
             sub["title"] = re.sub(r"^#+\s*", "", first)[:150]
-    repo_url = url if url and parse_github_url(url) else find_github_repo(sub["body"])
+    repo_url = repo_url or (url if url and parse_github_url(url) else find_github_repo(sub["body"]))
     if repo_url:
         owner, name = parse_github_url(repo_url)
         yield log(f"Opening the repo {owner}/{name}…")
@@ -221,8 +264,8 @@ async def dig_winners(ctx: Context, brief: dict, winners_url: str | None, exclud
         yield {"type": "winners", "winners": [], "patterns": None}
         return
     sources.append({"label": "Winners: " + (ann.get("title") or winners_url), "url": ann.get("url") or winners_url, "chars": min(len(ann["body"]), ctx.settings.source_char_cap)})
-    links = find_dev_articles(ann["body"] + "\n" + "\n".join(ann.get("links") or []), exclude={winners_url} | exclude)
-    excluded = len(find_dev_articles(ann["body"], exclude={winners_url})) - len(links)
+    links = winner_links(ann, winners_url, exclude)
+    excluded = len(winner_links(ann, winners_url, set())) - len(links)
     if excluded:
         yield log(f"Left out {excluded} winning post(s) that are being judged, so the test can't peek.")
     winners = []
@@ -248,7 +291,11 @@ These posts WON the hackathon "{brief.get('name') or 'this challenge'}". Find wh
 
 Aggregate facts: {stats}
 
-Reply with ONLY a JSON object: {{"patterns": ["3 to 5 short, concrete patterns, e.g. 'a number in the title', 'a measured before/after test', 'one personal problem solved'"]}}"""
+Each pattern must be SPECIFIC and CHECKABLE in a post, and cite the evidence briefly, for example:
+"A measured result in the title (2 of 3, e.g. '82% vs 79%')", "Opens with one personal, everyday annoyance", "A video demo above the fold".
+Never write generic patterns such as "uses AI", "solves a real problem" or "good writing".
+
+Reply with ONLY a JSON object: {{"patterns": ["3 to 5 patterns, each at most 16 words"]}}"""
 
     def validate(o: dict) -> dict:
         pats = _strs(o.get("patterns"), 160)[:5]
@@ -265,6 +312,20 @@ Reply with ONLY a JSON object: {{"patterns": ["3 to 5 short, concrete patterns, 
     if patterns["patterns"]:
         _store(key, (found, patterns, sources[start:]))
     yield {"type": "winners", "winners": found, "patterns": patterns}
+
+
+ORGANISERS = {"devteam", "mlh", "thepracticaldev", "sloan"}
+
+
+def winner_links(ann: dict, winners_url: str, exclude: set[str]) -> list[str]:
+    """The winning posts in an announcement, in order. Embedded posts first ({% embed %} is how
+    DEV shows winners); the organiser's own posts (hub pages, the 'join' post) are left out."""
+    body = ann.get("body") or ""
+    embeds = re.findall(r"\{%\s*(?:embed|link)\s+(https?://(?:www\.)?dev\.to/[\w.-]+/[\w-]+)", body)
+    pool = "\n".join(embeds) + "\n" + body + "\n" + "\n".join(ann.get("links") or [])
+    links = find_dev_articles(pool, exclude={winners_url} | exclude)
+    author = (parse_dev_url(winners_url) or ("",))[0].lower()
+    return [u for u in links if (parse_dev_url(u) or ("",))[0].lower() not in ORGANISERS | {author}]
 
 
 def winner_stats(facts: list[dict]) -> dict:
@@ -321,7 +382,14 @@ def finish(verdict: dict) -> dict:
     return verdict
 
 
-async def judge_submission(ctx: Context, brief: dict, sub: dict, checks: dict, patterns: dict | None, winners: list) -> dict:
+def user_context_block(ctx_text: str | None) -> str:
+    """What the user's case remembers: the chosen idea and lessons from past hackathons. Untrusted."""
+    t = _str(ctx_text, 2000)
+    return f"\nWHAT THE COUNT REMEMBERS ABOUT THIS MORTAL (their chosen idea, lessons from past hackathons; use it, refer to it when relevant):\n<<<{t}>>>\n" if t else ""
+
+
+async def judge_submission(ctx: Context, brief: dict, sub: dict, checks: dict, patterns: dict | None, winners: list,
+                           user_context: str | None = None) -> dict:
     criteria = brief["criteria"]
     names = [c["name"] for c in criteria]
     text = (sub.get("title") or "") + "\n" + (sub.get("body") or "")
@@ -329,7 +397,7 @@ async def judge_submission(ctx: Context, brief: dict, sub: dict, checks: dict, p
     prompt = f"""{PERSONA}
 {UNTRUSTED}
 Judge this hackathon submission against what THIS jury rewards. Be blunt and specific, and back every score with evidence.
-
+{user_context_block(user_context)}
 CHALLENGE: {brief.get('name') or 'unknown'}
 THEME: {brief.get('theme') or 'not stated'}
 JUDGING CRITERIA (in order of weight):
@@ -385,16 +453,37 @@ Reply with ONLY a JSON object:
 
 # ================================================================ the modes
 
+def clean_brief(b: Any) -> dict | None:
+    """A brief the client already has (from its case file). Untrusted: keep only known fields, clamp sizes."""
+    if not isinstance(b, dict):
+        return None
+    crits = [c for c in (b.get("criteria") or []) if isinstance(c, dict) and _str(c.get("name"), 80)][:8]
+    if not crits:
+        return None
+    return {
+        "name": _str(b.get("name"), 120),
+        "theme": _str(b.get("theme"), 400),
+        "deadline": _str(b.get("deadline"), 80) or None,
+        "deadline_iso": _iso(b.get("deadline_iso")),
+        "criteria": [{"name": _str(c.get("name"), 80), "description": _str(c.get("description"), 240),
+                      "weight": _str(c.get("weight"), 40) or None, "weight_pct": _clamp(c.get("weight_pct"), 0, 100, 0)} for c in crits],
+        "prize_categories": _strs(b.get("prize_categories"), 100)[:24],
+    }
+
+
 async def review_hackathon(ctx: Context, req: dict) -> AsyncIterator[dict]:
     sources: list[dict] = []
-    brief = None
-    async for ev in dig_brief(ctx, req.get("hackathon_url"), req.get("hackathon_text"), sources):
-        if ev["type"] == "brief":
-            brief = ev["brief"]
-        else:
-            yield ev
+    brief = clean_brief(req.get("brief"))
+    if brief:
+        yield log(f"Using the case file for {brief['name'] or 'this hackathon'}: {len(brief['criteria'])} criteria.")
+    else:
+        async for ev in dig_brief(ctx, req.get("hackathon_url"), req.get("hackathon_text"), sources):
+            if ev["type"] == "brief":
+                brief = ev["brief"]
+            else:
+                yield ev
     sub = repo = None
-    async for ev in dig_submission(ctx, req.get("submission_url"), req.get("submission_text"), sources):
+    async for ev in dig_submission(ctx, req.get("submission_url"), req.get("submission_text"), sources, req.get("repo_url")):
         if ev["type"] == "submission":
             sub, repo = ev["submission"], ev["repo"]
         else:
@@ -403,18 +492,23 @@ async def review_hackathon(ctx: Context, req: dict) -> AsyncIterator[dict]:
     if sub.get("url"):
         exclude.add(sub["url"])
     winners, patterns = [], None
-    async for ev in dig_winners(ctx, brief, req.get("winners_url"), exclude, sources):
-        if ev["type"] == "winners":
-            winners, patterns = ev["winners"], ev["patterns"]
-        else:
-            yield ev
+    known = _strs(req.get("patterns"), 160)[:5]
+    if known:
+        patterns = {"patterns": known, "stats": None}
+        yield log(f"Remembering {len(known)} patterns the winners shared.")
+    else:
+        async for ev in dig_winners(ctx, brief, req.get("winners_url"), exclude, sources):
+            if ev["type"] == "winners":
+                winners, patterns = ev["winners"], ev["patterns"]
+            else:
+                yield ev
     checks = run_checks(sub, repo, brief.get("prize_categories") or [])
     for p in checks["partners"]:
         yield log(f"Checking your repo for {p['partner']}… {p['status'].replace('_', ' ')}.", "check")
     f = checks["facts"]
     yield log(f"Counted {f['word_count']} words, {f['images']} images, {f['videos']} videos.", "check")
     yield log("The Count is deliberating…", "judge")
-    v = await judge_submission(ctx, brief, sub, checks, patterns, winners)
+    v = await judge_submission(ctx, brief, sub, checks, patterns, winners, req.get("user_context"))
     if v.get("dropped_quotes"):
         yield log(f"Struck {v['dropped_quotes']} quote(s) from the record: they were not in your submission.", "judge")
     yield {"type": "verdict", "verdict": finish({
@@ -425,41 +519,64 @@ async def review_hackathon(ctx: Context, req: dict) -> AsyncIterator[dict]:
     })}
 
 
-async def review_email(ctx: Context, req: dict) -> AsyncIterator[dict]:
+PITCH_CRITERIA = ["Hook", "Clarity", "Fit to the brief", "Proof"]
+
+
+async def review_email(ctx: Context, req: dict, kind: str = "email") -> AsyncIterator[dict]:
+    """Email mode, and pitch mode (a short pitch judged against the case's brief)."""
     email = (req.get("submission_text") or "").strip()
     if not email:
-        raise FetchError("Paste the email first, mortal.")
-    yield log("Unfolding the letter…")
+        raise FetchError("Paste the email first, mortal." if kind == "email" else "Paste the pitch first, mortal.")
+    yield log("Unfolding the letter…" if kind == "email" else "Hearing your pitch…")
     words = len(email.split())
     yield log(f"{words} words. The Count reaches for his red ink.", "check")
+    names = EMAIL_CRITERIA if kind == "email" else PITCH_CRITERIA
+    brief = clean_brief(req.get("brief"))
+    if kind == "email":
+        task = "Critique this email before it is sent, then improve it."
+        about = f"CONTEXT FROM THE SENDER (who it is to, what they want): <<<{cap(req.get('context') or 'none given', 1500)}>>>"
+        extra = '"better_subject": "a better subject line",\n  "rewrite": "the full rewritten email, ready to send, keeping the sender\'s facts and never inventing new ones",'
+    else:
+        task = "Critique this hackathon pitch (an elevator pitch or project summary), then improve it."
+        about = (f"HACKATHON: {brief['name']} | THEME: {brief['theme']} | CRITERIA: {', '.join(c['name'] for c in brief['criteria'])}"
+                 if brief else "HACKATHON: not given") + f"\nCONTEXT: <<<{cap(req.get('context') or 'none given', 1500)}>>>"
+        extra = '"better_subject": "a sharper one-line hook",\n  "rewrite": "the full rewritten pitch, keeping the facts and never inventing new ones",'
     prompt = f"""{PERSONA}
 {UNTRUSTED}
-Critique this email before it is sent, then improve it.
-CONTEXT FROM THE SENDER (who it is to, what they want): <<<{cap(req.get('context') or 'none given', 1500)}>>>
-EMAIL ({words} words):
-<<<EMAIL
+{task}
+{about}
+{user_context_block(req.get('user_context'))}
+TEXT ({words} words):
+<<<TEXT
 {cap(email, 8000)}
-EMAIL>>>
+TEXT>>>
 
 Reply with ONLY a JSON object:
 {{"overall": 0-100,
-  "criteria": [{{"name": "Clarity|Tone|The ask|Length", "score": 0-10, "verdict": "one sentence", "evidence_quote": "an EXACT quote from the email"}}] (exactly these 4, in this order: Clarity, Tone, The ask, Length),
+  "criteria": [{{"name": "{'|'.join(names)}", "score": 0-10, "verdict": "one sentence", "evidence_quote": "an EXACT quote from the text"}}] (exactly these {len(names)}, in this order: {', '.join(names)}),
   "top_fixes": ["exactly 3 concrete fixes"],
-  "better_subject": "a better subject line",
-  "rewrite": "the full rewritten email, ready to send, keeping the sender's facts and never inventing new ones",
+  {extra}
   "count_says": "1 or 2 sentences in character"}}"""
 
     def validate(o: dict) -> dict:
-        crits, dropped = _guard_criteria(o.get("criteria"), EMAIL_CRITERIA, email)
+        crits, dropped = _guard_criteria(o.get("criteria"), names, email)
         rewrite = str(o.get("rewrite") or "").strip()[:6000]
         if not rewrite:
-            raise LLMError('"rewrite" must contain the rewritten email', "validation")
+            raise LLMError('"rewrite" must contain the rewritten text', "validation")
         return {"overall": o.get("overall"), "criteria": crits, "dropped_quotes": dropped, "top_fixes": _three(o.get("top_fixes"), "top_fixes"),
                 "better_title": _str(o.get("better_subject"), 200), "rewrite": rewrite, "count_says": o.get("count_says")}
 
     yield log("The Count is deliberating…", "judge")
-    v = await complete_json(ctx.settings, ctx.client, prompt, validate=validate, label="email", max_tokens=1800)
-    yield {"type": "verdict", "verdict": finish({**v, "mode": "email", "facts": {"word_count": words}, "sources": [{"label": "Pasted email", "url": None, "chars": len(email)}]})}
+    v = await complete_json(ctx.settings, ctx.client, prompt, validate=validate, label=kind, max_tokens=1800)
+    label = "Pasted email" if kind == "email" else "Your pitch"
+    yield {"type": "verdict", "verdict": finish({**v, "mode": kind, "brief": brief, "facts": {"word_count": words},
+                                                 "submission": {"title": label, "url": None},
+                                                 "sources": [{"label": label, "url": None, "chars": len(email)}]})}
+
+
+async def review_pitch(ctx: Context, req: dict) -> AsyncIterator[dict]:
+    async for ev in review_email(ctx, req, "pitch"):
+        yield ev
 
 
 async def review_idea(ctx: Context, req: dict) -> AsyncIterator[dict]:
@@ -519,7 +636,7 @@ Reply with ONLY a JSON object:
     yield {"type": "verdict", "verdict": finish({**v, "mode": "idea", "brief": brief, "winners": winners, "sources": sources})}
 
 
-MODES = {"hackathon": review_hackathon, "email": review_email, "idea": review_idea}
+MODES = {"hackathon": review_hackathon, "email": review_email, "idea": review_idea, "pitch": review_pitch}
 
 
 async def run_review(ctx: Context, req: dict) -> AsyncIterator[dict]:

@@ -65,19 +65,20 @@ export default function Backtest({ onDig, onDone }: { onDig: () => void; onDone:
 
   const pct = progress.total ? Math.round((progress.done / progress.total) * 100) : 0;
   return (
-    <section className="backtest parchment">
-      <h2>Backtest: would the Count have picked the winners?</h2>
+    <section className="backtest card form fade-rise">
+      <p className="eyebrow">Backtest lab</p>
+      <h1 className="page-title">Would the Count have picked the winners?</h1>
       <p className="fine">Blind by design: the Count never sees which entries won. Enter the true winners only after the run.</p>
-      <label>Up to 20 DEV post URLs <span className="opt">({urls.length} found)</span>
+      <label className="field">Up to 20 DEV post URLs <span className="muted small">({urls.length} found)</span>
         <textarea rows={6} value={urlsText} onChange={(e) => setUrlsText(e.target.value)} placeholder="One per line" />
       </label>
-      <label>Hackathon URL
+      <label className="field">Hackathon URL
         <input type="url" value={hackUrl} onChange={(e) => setHackUrl(e.target.value)} placeholder="https://dev.to/challenges/…" />
       </label>
-      <label>Winners announcement URL <span className="opt">(optional; used for the brief and patterns only, with the judged posts left out)</span>
+      <label className="field">Winners announcement URL <span className="muted small">(optional; used for the brief and patterns only, with the judged posts left out)</span>
         <input type="url" value={winnersUrl} onChange={(e) => setWinnersUrl(e.target.value)} />
       </label>
-      <button className="summon" type="button" disabled={running || !urls.length || !hackUrl.trim()} onClick={run}>
+      <button className="btn btn-primary" type="button" disabled={running || !urls.length || !hackUrl.trim()} onClick={run}>
         {running ? `Judging ${progress.done + 1} of ${progress.total}…` : `Judge ${urls.length || ''} entries`}
       </button>
       {progress.total > 0 && (
@@ -107,13 +108,13 @@ export default function Backtest({ onDig, onDone }: { onDig: () => void; onDone:
 
       {rows.some((r) => r.overall != null) && !running && (
         <div className="labels">
-          <label>True winners (paste their URLs, after the run)
+          <label className="field">True winners (paste their URLs, after the run)
             <textarea rows={3} value={labels} onChange={(e) => setLabels(e.target.value)} />
           </label>
-          <label className="inline">Top N <input type="number" min={1} max={20} value={topN} onChange={(e) => setTopN(Number(e.target.value) || 1)} /></label>
+          <label className="field inline">Top N <input type="number" min={1} max={20} value={topN} onChange={(e) => setTopN(Number(e.target.value) || 1)} /></label>
           <div className="row-btns">
-            <button type="button" className="copy" onClick={compute} disabled={!winnerSet.size}>Score the Count</button>
-            <button type="button" className="copy" onClick={downloadCSV}>Export CSV</button>
+            <button type="button" className="btn btn-outline btn-sm" onClick={compute} disabled={!winnerSet.size}>Score the Count</button>
+            <button type="button" className="btn btn-outline btn-sm" onClick={downloadCSV}>Export CSV</button>
           </div>
         </div>
       )}

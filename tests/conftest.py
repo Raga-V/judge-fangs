@@ -30,7 +30,7 @@ def make_client(tmp_path):
     clients = []
 
     def _make(env: dict | None = None, handler=None, now=None) -> TestClient:
-        settings = load_settings({"CACHE_DIR": str(tmp_path / "cache"), **(env or {})})
+        settings = load_settings({"CACHE_DIR": str(tmp_path / "cache"), "LLM_RETRY_DELAY": "0", **(env or {})})
         transport = httpx.MockTransport(handler or (lambda r: httpx.Response(404)))
         kwargs = {"now": now} if now else {}
         app = create_app(settings, transport=transport, resolver=public_resolver, **kwargs)

@@ -19,8 +19,9 @@ from pydantic import BaseModel, Field, field_validator
 
 from . import tracing
 from .backtest import score_backtest
+from .companion import chat, debrief, dig_case, ideas
 from .config import Settings, load_settings
-from .fetchers import Fetcher, Resolver, default_resolver
+from .fetchers import FetchError, Fetcher, Resolver, default_resolver
 from .judge import Context, identify_screen, log, run_review, screen_request
 from .limits import ADJOURNED, BodyCapMiddleware, DailyCap, RateLimiter, client_ip
 from .llm import LLMFailed
@@ -33,27 +34,87 @@ SCREEN_LIMIT = 1024 * 1024
 
 
 def load_demos() -> dict[str, dict]:
+    """The two example verdicts (strong.json, weak.json)."""
     out = {}
-    for f in sorted(DEMO_DIR.glob("*.json")):
-        v = json.loads(f.read_text(encoding="utf-8"))
+    for name in ("strong.json", "weak.json"):
+        v = json.loads((DEMO_DIR / name).read_text(encoding="utf-8"))
         out[v["id"]] = v
     return out
 
 
+def load_demo_case() -> dict:
+    """A fully populated example case (Hacktoberfest Week 3), also bundled into the web app."""
+    return json.loads((DEMO_DIR / "case.json").read_text(encoding="utf-8"))
+
+
+def _blank(v: Any) -> Any:
+    return v.strip() or None if isinstance(v, str) else v
+
+
 class ReviewIn(BaseModel):
-    mode: Literal["hackathon", "email", "idea"] = "hackathon"
+    mode: Literal["hackathon", "email", "idea", "pitch"] = "hackathon"
     hackathon_url: str | None = Field(None, max_length=500)
     hackathon_text: str | None = Field(None, max_length=30000)
     submission_url: str | None = Field(None, max_length=500)
+    repo_url: str | None = Field(None, max_length=500)
     submission_text: str | None = Field(None, max_length=40000)
     context: str | None = Field(None, max_length=2000)
     winners_url: str | None = Field(None, max_length=500)
     exclude_urls: list[str] = Field(default_factory=list, max_length=25)
+    brief: dict | None = None  # the case file's brief, so the Count needn't dig again
+    patterns: list[str] = Field(default_factory=list, max_length=8)
+    user_context: str | None = Field(None, max_length=2000)  # chosen idea + lessons learned
 
-    @field_validator("hackathon_url", "hackathon_text", "submission_url", "submission_text", "context", "winners_url", mode="before")
+    @field_validator("hackathon_url", "hackathon_text", "submission_url", "repo_url", "submission_text", "context",
+                     "winners_url", "user_context", mode="before")
     @classmethod
     def blank_is_none(cls, v: Any) -> Any:
-        return v.strip() or None if isinstance(v, str) else v
+        return _blank(v)
+
+
+class CaseIn(BaseModel):
+    url: str | None = Field(None, max_length=500)
+    name: str | None = Field(None, max_length=160)
+    text: str | None = Field(None, max_length=30000)
+    winners_url: str | None = Field(None, max_length=500)
+
+    @field_validator("url", "name", "text", "winners_url", mode="before")
+    @classmethod
+    def blank_is_none(cls, v: Any) -> Any:
+        return _blank(v)
+
+
+class ChatMessage(BaseModel):
+    role: Literal["user", "fangs"]
+    content: str = Field(..., max_length=4000)
+
+
+class ChatIn(BaseModel):
+    message: str = Field(..., min_length=1, max_length=2000)
+    context: str = Field("", max_length=8000)
+    history: list[ChatMessage] = Field(default_factory=list, max_length=12)
+    tab: str = Field("brief", max_length=20)
+
+
+class IdeasIn(BaseModel):
+    mode: Literal["judge", "generate"]
+    brief: dict | None = None
+    ideas: list[str] = Field(default_factory=list, max_length=5)
+    patterns: list[str] = Field(default_factory=list, max_length=8)
+    user_context: str | None = Field(None, max_length=2000)
+
+
+class DebriefIn(BaseModel):
+    brief: dict | None = None
+    submission: dict = Field(default_factory=dict)
+    winners_url: str | None = Field(None, max_length=500)
+    winners_text: str | None = Field(None, max_length=20000)
+    result: Literal["won", "lost"] = "lost"
+
+    @field_validator("winners_url", "winners_text", mode="before")
+    @classmethod
+    def blank_is_none(cls, v: Any) -> Any:
+        return _blank(v)
 
 
 class VoiceIn(BaseModel):
@@ -78,8 +139,9 @@ def create_app(settings: Settings | None = None, transport: httpx.AsyncBaseTrans
                resolver: Resolver | None = None, now=time.time) -> FastAPI:
     settings = settings or load_settings()
     demos = load_demos()
+    demo_case = load_demo_case()
     registry = VoiceRegistry(now=now)
-    for d in demos.values():
+    for d in list(demos.values()) + demo_case.get("verdicts", []):
         registry.add_permanent(d["voice_line"])
     state: dict[str, Any] = {}
 
@@ -95,8 +157,10 @@ def create_app(settings: Settings | None = None, transport: httpx.AsyncBaseTrans
     app.add_middleware(CORSMiddleware, allow_origins=settings.allowed_origins, allow_methods=["GET", "POST"],
                        allow_headers=["content-type"], max_age=600)
     app.add_middleware(BodyCapMiddleware, default=64 * 1024, overrides={"/api/judge-screen": SCREEN_LIMIT})
-    limiter = RateLimiter({"review": settings.rate_reviews, "backtest": settings.rate_backtest, "voice": settings.rate_voice}, now=now)
-    caps = DailyCap({"review": settings.daily_review_cap, "voice": settings.daily_voice_cap}, now=now)
+    limiter = RateLimiter({"review": settings.rate_reviews, "backtest": settings.rate_backtest, "voice": settings.rate_voice,
+                           "case": settings.rate_cases, "chat": settings.rate_chat, "ideas": settings.rate_ideas,
+                           "debrief": settings.rate_debrief}, now=now)
+    caps = DailyCap({"review": settings.daily_review_cap, "voice": settings.daily_voice_cap, "chat": settings.daily_chat_cap}, now=now)
     cache = AudioCache(str(Path(settings.cache_dir) / "voice") if settings.cache_dir else None)
     verdicts: dict[str, tuple[float, dict]] = {}
 
@@ -114,14 +178,14 @@ def create_app(settings: Settings | None = None, transport: httpx.AsyncBaseTrans
         ids = sorted(demos)
         return demos[ids[int(hashlib.sha256(key).hexdigest(), 16) % len(ids)]]
 
-    def gate(request: Request, bucket: str) -> str | None:
-        """None if the live tribunal may sit; otherwise a banner explaining the demo verdict."""
+    def gate(request: Request, bucket: str, cap: str = "review") -> str | None:
+        """None if the live tribunal may sit; otherwise a banner explaining the demo answer."""
         if settings.demo_mode:
             return DEMO_BANNER
         ok, _ = limiter.take(bucket, client_ip(request, settings.trust_proxy))
-        if not ok or caps.reached("review"):
+        if not ok or caps.reached(cap):
             return ADJOURNED_BANNER
-        caps.add("review")
+        caps.add(cap)
         return None
 
     def demo_verdict(req: ReviewIn, banner: str) -> dict:
@@ -264,6 +328,88 @@ def create_app(settings: Settings | None = None, transport: httpx.AsyncBaseTrans
         if error:
             return JSONResponse({"seen": {"kind": seen["kind"], "title": seen["title"]}, "logs": logs, "error": error}, status_code=422)
         return {"seen": {"kind": seen["kind"], "title": seen["title"], "challenge": seen.get("challenge_name")}, "logs": logs, "verdict": verdict}
+
+    # ------------------------------------------------------------ the companion
+
+    @app.get("/api/demo-case")
+    async def get_demo_case() -> dict:
+        return demo_case
+
+    @app.post("/api/case/stream")
+    async def case_stream(body: CaseIn, request: Request):
+        """Open a case: dig the brief (searching by name if there's no URL) and the winners' patterns."""
+        if not (body.url or body.name or body.text):
+            return JSONResponse({"error": "Give the Count a hackathon URL or a name, mortal."}, status_code=400)
+        banner = gate(request, "case")
+
+        async def events() -> AsyncIterator[str]:
+            if banner:
+                yield sse("log", log("The Count opens a case file from memory…"))
+                yield sse("case", {**{k: demo_case[k] for k in ("brief", "patterns", "winner_stats", "winners", "sources", "winners_url")},
+                                   "banner": banner})
+                return
+            ctx = state["ctx"]
+            with tracing.span("gen_ai.invoke_agent", "invoke_agent open_case", **{"judge.mode": "case", "judge.has_url": bool(body.url),
+                                                                                 "judge.has_name": bool(body.name)}):
+                try:
+                    async for ev in dig_case(ctx, body.model_dump()):
+                        yield sse(ev["type"], ev)
+                except (FetchError, LLMFailed) as e:
+                    yield sse("error", {"msg": str(e)})
+
+        return StreamingResponse(events(), media_type="text/event-stream", headers={"cache-control": "no-cache", "x-accel-buffering": "no"})
+
+    @app.post("/api/chat")
+    async def chat_route(body: ChatIn, request: Request):
+        banner = gate(request, "chat", "chat")
+        if banner:
+            text = body.message.lower()
+            replies = demo_case.get("chat_replies") or []
+            pick = next((r for r in replies if any(k in text for k in r["match"])), None)
+            reply = (pick or {}).get("reply") or demo_case.get("chat_default") or "The Count is resting. Ask again at moonrise."
+            return {"reply": reply, "banner": banner}
+        try:
+            reply = await chat(state["ctx"], body.model_dump())
+        except LLMFailed as e:
+            return JSONResponse({"error": str(e)}, status_code=422)
+        return {"reply": reply}
+
+    @app.post("/api/ideas")
+    async def ideas_route(body: IdeasIn, request: Request):
+        if body.mode == "judge" and not [i for i in body.ideas if i.strip()]:
+            return JSONResponse({"error": "Give the Count at least one idea, mortal."}, status_code=400)
+        banner = gate(request, "ideas")
+        if banner:
+            if body.mode == "generate":
+                return {"mode": "generate", "ideas": demo_case["generated"], "banner": banner,
+                        "count_says": "From memory, mortal: three ideas nobody else in this jury's pile has built."}
+            judged = demo_case["judged_ideas"]["ideas"]
+            items = [{**judged[i % len(judged)], "idea": text} for i, text in enumerate(i for i in body.ideas if i.strip())]
+            return {"mode": "judge", "ideas": items, "best": 0, "banner": banner}
+        try:
+            with tracing.span("gen_ai.invoke_agent", "invoke_agent ideate", **{"judge.mode": "ideas." + body.mode, "judge.ideas": len(body.ideas)}):
+                return await ideas(state["ctx"], body.model_dump())
+        except (LLMFailed, FetchError) as e:
+            return JSONResponse({"error": str(e)}, status_code=422)
+
+    @app.post("/api/debrief")
+    async def debrief_route(body: DebriefIn, request: Request):
+        if not (body.winners_url or body.winners_text):
+            return JSONResponse({"error": "Paste the winners announcement URL (or the winning posts), mortal."}, status_code=400)
+        banner = gate(request, "debrief")
+        if banner:
+            return {"logs": [], "debrief": {**demo_case["debrief"], "result": body.result}, "banner": banner}
+        logs, out = [], None
+        try:
+            with tracing.span("gen_ai.invoke_agent", "invoke_agent debrief", **{"judge.mode": "debrief", "judge.result": body.result}):
+                async for ev in debrief(state["ctx"], body.model_dump()):
+                    if ev["type"] == "log":
+                        logs.append(ev["msg"])
+                    else:
+                        out = ev["debrief"]
+        except (LLMFailed, FetchError) as e:
+            return JSONResponse({"logs": logs, "error": str(e)}, status_code=422)
+        return {"logs": logs, "debrief": out}
 
     return app
 

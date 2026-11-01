@@ -62,3 +62,36 @@ describe('streaming and backtest helpers', () => {
     expect(csv).toContain('https://dev.to/b/two,Two,40,,yes');
   });
 });
+
+import demoCase from '../../app/demo/case.json';
+import { buildChatContext, CONTEXT_CAP, userContext } from './caseContext';
+import { formatLeft, msLeft } from './time';
+import type { Case } from './types';
+
+describe('the companion', () => {
+  const c = demoCase as unknown as Case;
+  it('ships a fully populated example case', () => {
+    expect(c.brief.criteria.length).toBeGreaterThan(2);
+    expect(c.patterns.length).toBeGreaterThanOrEqual(3);
+    expect(c.verdicts.map((v) => v.overall)).toEqual([52, 68, 81]);
+    expect(c.ideas.length).toBe(3);
+    expect(c.debrief?.lessons).toHaveLength(3);
+    expect(c.chat.length).toBeGreaterThan(0);
+  });
+  it('builds a capped chat context with the case essentials', () => {
+    const lessons = [{ text: 'Lead with a number', caseId: 'other', caseName: 'Week 2', at: '' }];
+    const many = Array.from({ length: 40 }, (_, i) => ({ role: (i % 2 ? 'fangs' : 'user') as 'user' | 'fangs', content: 'x'.repeat(500), at: String(i) }));
+    const ctx = buildChatContext(c, lessons, many);
+    expect(ctx.length).toBeLessThanOrEqual(CONTEXT_CAP);
+    expect(ctx).toContain('Writing Quality');
+    expect(ctx).toContain('Chosen idea: Receipt Sloth');
+    expect(ctx).toContain('Latest verdict');
+    expect(ctx).toContain('Earlier in this chat');
+    expect(userContext(c, lessons)).toContain('Lead with a number');
+  });
+  it('counts down to the deadline', () => {
+    expect(formatLeft(26 * 3600e3 + 5 * 60e3)).toBe('1d 2h left');
+    expect(formatLeft(-1)).toBe('Ended');
+    expect(msLeft({ ...c.brief, deadline_iso: '2026-10-25T23:59:00-07:00' }, Date.parse('2026-10-25T00:00:00Z'))).toBeGreaterThan(0);
+  });
+});

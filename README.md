@@ -1,22 +1,48 @@
 # Judge Fangs
 
-**A strict, funny, 3,000-year-old vampire judge who has sat on every hackathon jury since the fall of Rome.**
-
-Give him the hackathon (a challenge URL or a pasted brief) and your submission (a DEV post, a GitHub repo or pasted text). He digs up the judging criteria, the prize categories and what past winners had in common. Then he tells you, bluntly and with evidence, how your submission scores against what this jury actually rewards, why it would or wouldn't win, and exactly what to fix.
+**Your hackathon companion, from idea to verdict.** A strict, funny, 3,000-year-old vampire judge who has sat on every hackathon jury since the fall of Rome, and who now sits beside you through the whole hackathon.
 
 > "I have watched empires fall with more structure than your README. Three fixes. Then we shall speak again."
 
-Two more modes use the same engine: **Email** (critique and improve an email before you send it) and **Idea** (judge a hackathon idea before you build it). A **Backtest** page checks whether the Count would have picked the real winners. A **desktop companion** lets you press <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>J</kbd> anywhere and have him judge what's on your screen.
+Open a **case file** for each hackathon you enter: paste its URL or just type its name. The Count digs up the theme, the judging criteria in order of weight, the prize categories, the deadline and what past winners had in common. Then each case follows the hackathon timeline:
+
+| Tab | When | What Fangs does |
+|---|---|---|
+| **Brief** | before | The case file: the theme in one line, weighted criteria, prize categories, a deadline countdown, "what winners usually have", and the sources he read |
+| **Ideate** | before | Judges up to 5 ideas on originality, theme fit, buildability before the deadline and partner-category fit, with "How it could win". **Give me ideas** suggests 3 original ones that avoid what's already common. Star ideas, and choose one: it becomes context everywhere else |
+| **Judge** | during | The full review of any mix of a DEV post, a GitHub repo and pasted text (or a pitch or an email): a wax-sealed verdict with evidence quotes, 3 fixes, a better title and opening. Every draft is kept, so a small chart shows your score climbing |
+| **Debrief** | after | Mark the result, paste the winners post, and he compares your entry with the real winners: what they did that you didn't, what you did well, and **3 lessons** |
+
+Lessons are remembered across all cases ("Lessons learned" in the sidebar) and fed into future Ideate, Judge and chat prompts. **Ask Fangs** is a chat drawer, available in every tab, with counsel specific to the case: its criteria, deadline, chosen idea and latest verdict.
+
+**See an example case** loads a fully populated case built from the real Hacktoberfest Week 3 ("Slow and Steady") brief and winners, with no API calls needed. The brief, prize categories, deadline, winners and sources come from a live dig of the real posts. The entry itself ("Receipt Sloth") and its drafts are fictional.
+
+Also included: a **Backtest lab** (would the Count have picked the real winners?) and a **desktop companion** (<kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>J</kbd> anywhere and he judges what's on your screen).
 
 **Live:** https://fangs-web.onrender.com (API: https://fangs-api.onrender.com). Replace these with your Render URLs.
 
-![An example verdict](docs/verdict-example.png)
+![Landing](docs/landing.png)
 
-| The Count, in every pose and mood | On a phone |
+| A case file (Brief + Ask Fangs) | Judge: score history and the verdict |
 |---|---|
-| ![Sprite sheet](docs/sprite-sheet.png) | ![Mobile](docs/mobile.png) |
+| ![Brief](docs/case-brief.png) | ![Judge](docs/case-judge.png) |
+| **Ideate** | **On a phone** |
+| ![Ideate](docs/case-ideate.png) | ![Mobile](docs/mobile.png) |
 
 Judge Fangs is an original character, drawn as 32×32 pixel arrays in code (`shared/fangs-sprite.js`). There are no image files and no borrowed sprites.
+
+## The API
+
+| Route | What it does |
+|---|---|
+| `POST /api/case/stream` | Open a case (SSE): dig the brief from a URL, a name (searched with SerpApi) or pasted text, plus the winners' patterns |
+| `POST /api/review/stream`, `POST /api/review` | The dig → check → judge review. Inside a case, the brief and patterns are passed in, so he doesn't dig again |
+| `POST /api/chat` | Ask Fangs. The browser sends a compact case context (capped at 6,000 characters; older messages summarised to one line each) plus the last 10 messages |
+| `POST /api/ideas` | `mode: "judge"` scores up to 5 ideas; `mode: "generate"` suggests 3 |
+| `POST /api/debrief` | Compares the final submission with the real winners and writes 3 lessons |
+| `POST /api/voice`, `POST /api/judge-screen`, `/api/backtest/*` | "Hear the sentence", the desktop companion, the backtest |
+
+Every route has per-IP rate limits, counts toward the daily caps, and answers from `app/demo/` in demo mode. Chat, idea and debrief text never goes to Sentry: only lengths, labels and timings do.
 
 ## How it works: dig → check → judge
 
@@ -99,7 +125,7 @@ cd web && npm run build && npx vitest run
 |---|---|---|
 | `LLM_API_KEY` | for live reviews (otherwise demo mode) | Google AI Studio: https://aistudio.google.com/apikey |
 | `LLM_BASE_URL` | no | default `https://generativelanguage.googleapis.com/v1beta/openai` |
-| `LLM_MODEL` | no | default `gemma-3-27b-it` (the largest Gemma on AI Studio; it also reads images, which `/api/judge-screen` needs) |
+| `LLM_MODEL` | no | default `gemma-4-31b-it` (the largest Gemma on AI Studio; it also reads images, which `/api/judge-screen` needs) |
 | `ELEVENLABS_API_KEY` | for "Hear the sentence" | https://elevenlabs.io/app/settings/api-keys |
 | `ELEVENLABS_VOICE_ID` | no | a deep, severe voice from https://elevenlabs.io/app/voice-library (default: a premade deep voice) |
 | `GITHUB_TOKEN` | recommended | https://github.com/settings/tokens. A token with no scopes lifts the 60 requests/hour limit to 5,000 |
@@ -117,8 +143,8 @@ Change three env vars and nothing else:
 
 | Provider | `LLM_BASE_URL` | `LLM_MODEL` | `LLM_API_KEY` |
 |---|---|---|---|
-| Google AI Studio (default) | `https://generativelanguage.googleapis.com/v1beta/openai` | `gemma-3-27b-it` | AI Studio key |
-| OpenRouter | `https://openrouter.ai/api/v1` | `google/gemma-3-27b-it` | OpenRouter key |
+| Google AI Studio (default) | `https://generativelanguage.googleapis.com/v1beta/openai` | `gemma-4-31b-it` | AI Studio key |
+| OpenRouter | `https://openrouter.ai/api/v1` | `google/gemma-4-31b-it` | OpenRouter key |
 | Self-hosted (vLLM, Ollama, llama.cpp server) | e.g. `https://your-gpu-box.example/v1` | your model name | your server's key, if any (none needed for a `localhost` URL) |
 
 ## Privacy
@@ -129,6 +155,8 @@ Change three env vars and nothing else:
 | Links you give | Fetched by the API from dev.to and GitHub only | No |
 | Screenshots (desktop) | Taken only on the shortcut, shown to you, sent only when you press "Judge this". The API drops the bytes right after the model call | Never written to disk or kept on the server |
 | Verdicts | Kept in the API's memory for 1 hour so "Open full verdict" works | Memory only |
+| Case files: briefs, ideas, verdicts, chat history, lessons | Your browser's localStorage. **Export case (JSON)** saves a copy; **Delete case** removes it | Only on your device |
+| Ask Fangs messages | The API, then the hosted model provider, with a compact case context built in your browser | Not by Judge Fangs |
 | Voice | Only the verdict line (his sentence and the score) goes to **ElevenLabs** | Audio cached by text hash |
 | Sentry (optional) | Lengths, labels, timings, token counts. **Never** submission text, emails, ideas, screenshots or model output | With the operator's Sentry |
 
@@ -153,6 +181,7 @@ Request bodies are never sent (`max_request_body_size="never"`), PII is off, and
 
 ## Limitations
 
+- **Reviews take 1 to 3 minutes.** Gemma 4 thinks before it answers (about a minute per model call), and a full review makes up to 3 calls. The digging log streams meanwhile. When AI Studio is overloaded (HTTP 503), the retry uses `LLM_FALLBACK_MODEL`.
 - **One open model judging.** Gemma is good at following this rubric, but it is not a real jury. The backtest is there so you can measure how far to trust it.
 - **DEV challenge pages** are read as HTML text. If the page layout hides the criteria, paste the brief instead.
 - **The partner scanner** reads manifests and up to ~24 source files per repo. It can miss usage buried deep in a large monorepo, and it can't see tools that leave no trace in code (GitHub Copilot, for example).

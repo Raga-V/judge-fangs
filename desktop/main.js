@@ -104,7 +104,7 @@ ipcMain.handle('fangs:judge', async () => {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify({ image }),
-      signal: AbortSignal.timeout(180000),
+      signal: AbortSignal.timeout(600000),
     });
     const body = await r.json().catch(() => ({}));
     if (!r.ok || !body.verdict) return { error: body.error || `The tribunal answered ${r.status}.` };
