@@ -18,3 +18,4 @@ web/dist/
 desktop/dist/
 *.log
 .DS_Store
+desktop/renderer/fangs-sprite.js

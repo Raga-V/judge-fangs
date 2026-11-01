@@ -1,0 +1,55 @@
+{
+  "id": "example-weak",
+  "mode": "hackathon",
+  "demo": true,
+  "example_label": "Example: a weak (fictional) submission",
+  "overall": 38,
+  "expression": "unimpressed",
+  "submission": {"title": "My Submission", "url": null},
+  "brief": {
+    "name": "Example Open-Source AI Challenge",
+    "theme": "Build something with open-weight models that solves a real problem, and explain why open innovation matters.",
+    "deadline": "November 1, 11:59 PM PT",
+    "criteria": [
+      {"name": "Use of underlying technology", "description": "Meaningful use of open-weight models and partner tools", "weight": null},
+      {"name": "Usability and user experience", "description": "Clear, polished, easy to try", "weight": null},
+      {"name": "Originality and creativity", "description": "A fresh idea with personality", "weight": null},
+      {"name": "Writing and presentation", "description": "The post explains, shows and convinces", "weight": null}
+    ],
+    "prize_categories": ["Overall winner", "Best Use of Sentry", "Best Use of ElevenLabs"]
+  },
+  "criteria": [
+    {"name": "Use of underlying technology", "score": 4, "verdict": "An open model is named, but nothing shows what it does that a regex couldn't.", "evidence_quote": "it uses AI to make your notes better", "supported": true},
+    {"name": "Usability and user experience", "score": 3, "verdict": "There is no demo link, so the jury must take your word for it, and it won't.", "evidence_quote": null, "supported": false},
+    {"name": "Originality and creativity", "score": 4, "verdict": "An AI note improver is the most common entry this jury sees, every year, since Rome.", "evidence_quote": "an app that improves your notes", "supported": true},
+    {"name": "Writing and presentation", "score": 3, "verdict": "Three paragraphs, no images, and a title that could belong to anyone.", "evidence_quote": "This is my submission for the challenge", "supported": true}
+  ],
+  "why_not_winning": [
+    "Every winner had a demo link; you have none.",
+    "Winners measured something. You say 'better' without a single number.",
+    "You claim Best Use of Sentry, but there is no Sentry anywhere in your code."
+  ],
+  "top_fixes": [
+    "Deploy it (a free tier is fine) and put the live link in the first three lines.",
+    "Pick one person with one messy note, and show the before and after with a number: time saved, words cut, errors fixed.",
+    "Either add Sentry for real (SDK, DSN, one traced model call) or remove the claim. The jury checks."
+  ],
+  "better_title": "I Turned 30 Minutes of Messy Lecture Notes Into a 5-Minute Study Sheet With an Open Model",
+  "better_opening": "Every Sunday I lost half an hour rewriting my lecture notes. So I built a small app on an open-weight model that turns a messy page into a study sheet: headings, key terms, three practice questions. On my last ten lectures it saved 25 minutes each. Try it live, then read how it works.",
+  "count_says": "Objection. To all of it. I have watched empires fall with more structure than your README, mortal. Three fixes. Then we shall speak again.",
+  "voice_line": "Objection. To all of it. I have watched empires fall with more structure than your README, mortal. Three fixes. Then we shall speak again. Overall: 38 out of one hundred.",
+  "facts": {"word_count": 212, "reading_time_min": 1, "title_has_number": false, "images": 0, "videos": 0, "has_demo_link": false, "has_repo_link": true, "has_open_innovation_section": false, "headings": 1, "code_blocks": 0, "repo_commits": 4, "repo_has_ci": false, "repo_languages": ["JavaScript"], "repo_has_readme": true, "repo_files_scanned": 6},
+  "partners": [
+    {"partner": "Sentry", "claim": "Best Use of Sentry", "status": "not_found", "evidence": [], "overruled": true}
+  ],
+  "overrules": ["The Count's code check overruled the model: it said Sentry is used, but no code evidence was found."],
+  "patterns": ["A number in the title", "A measured before/after test", "One personal problem, told in the first paragraph", "A GIF or video above the fold", "An honest 'what didn't work' section"],
+  "winner_stats": {"winners": 3, "pct_title_with_number": 67, "avg_words": 1310, "avg_images": 4.3, "pct_with_video": 67, "pct_with_demo_link": 100, "pct_with_repo_link": 100},
+  "winners": [],
+  "sources": [
+    {"label": "Example challenge brief", "url": null, "chars": 6400},
+    {"label": "Example submission post", "url": null, "chars": 1300},
+    {"label": "Example repo", "url": null, "chars": 900}
+  ],
+  "judged_at": "2026-11-01T00:00:00+00:00"
+}

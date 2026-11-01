@@ -1,0 +1,32 @@
+{
+  "name": "judge-fangs-desktop",
+  "productName": "Judge Fangs",
+  "version": "1.0.0",
+  "description": "Judge Fangs on your desktop: press Ctrl+Shift+J and he judges what you're working on.",
+  "main": "main.js",
+  "private": true,
+  "scripts": {
+    "copy-sprite": "node scripts/copy-sprite.js",
+    "start": "npm run copy-sprite && electron .",
+    "dist": "npm run copy-sprite && electron-builder --win portable --publish never"
+  },
+  "build": {
+    "appId": "dev.judgefangs.desktop",
+    "files": [
+      "main.js",
+      "preload.js",
+      "config.json",
+      "renderer/**/*"
+    ],
+    "win": {
+      "target": "portable"
+    },
+    "directories": {
+      "output": "dist"
+    }
+  },
+  "devDependencies": {
+    "electron": "45.2.1",
+    "electron-builder": "26.18.0"
+  }
+}

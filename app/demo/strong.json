@@ -1,0 +1,56 @@
+{
+  "id": "example-strong",
+  "mode": "hackathon",
+  "demo": true,
+  "example_label": "Example: a strong (fictional) submission",
+  "overall": 84,
+  "expression": "impressed",
+  "submission": {"title": "I Cut Our Bug Triage Time by 41% With an Open-Source Agent (and Sentry Watched Every Step)", "url": null},
+  "brief": {
+    "name": "Example Open-Source AI Challenge",
+    "theme": "Build something with open-weight models that solves a real problem, and explain why open innovation matters.",
+    "deadline": "November 1, 11:59 PM PT",
+    "criteria": [
+      {"name": "Use of underlying technology", "description": "Meaningful use of open-weight models and partner tools", "weight": null},
+      {"name": "Usability and user experience", "description": "Clear, polished, easy to try", "weight": null},
+      {"name": "Originality and creativity", "description": "A fresh idea with personality", "weight": null},
+      {"name": "Writing and presentation", "description": "The post explains, shows and convinces", "weight": null}
+    ],
+    "prize_categories": ["Overall winner", "Best Use of Sentry", "Best Use of ElevenLabs"]
+  },
+  "criteria": [
+    {"name": "Use of underlying technology", "score": 9, "verdict": "Gemma does real work here, and the Sentry spans prove it rather than decorate it.", "evidence_quote": "every model call is a gen_ai.chat span, so you can see the 3 retries that saved the demo", "supported": true},
+    {"name": "Usability and user experience", "score": 8, "verdict": "One command and a live link; a judge can try it in under a minute.", "evidence_quote": "Try it live: no sign-up, paste any GitHub issue URL", "supported": true},
+    {"name": "Originality and creativity", "score": 7, "verdict": "Triage bots exist; the measured before/after is what makes it yours.", "evidence_quote": "Our median time-to-label dropped from 22 minutes to 13", "supported": true},
+    {"name": "Writing and presentation", "score": 9, "verdict": "A number in the title, a GIF in the first screen, and a test anyone can repeat.", "evidence_quote": "Here is the exact test so you can run it on your own repo", "supported": true}
+  ],
+  "why_not_winning": [
+    "It nearly does. The winners also opened with a personal problem; yours opens with architecture.",
+    "Two of three winners showed failure honestly. You hide the 9% of issues the agent mislabels.",
+    "The ElevenLabs category is claimed in passing, but the voice feature is a footnote."
+  ],
+  "top_fixes": [
+    "Open with the Tuesday your team drowned in 140 untriaged issues, then show the 41%.",
+    "Add a short 'Where it fails' section with the 9% mislabels and what you'd do next.",
+    "Either cut the ElevenLabs claim or give the voice summary its own GIF and a sentence on why it helps."
+  ],
+  "better_title": "140 Untriaged Issues on a Tuesday: How an Open-Source Agent Cut Our Triage Time by 41%",
+  "better_opening": "Last Tuesday our repo had 140 untriaged issues and nobody wanted Monday's job. So I built an agent on an open-weight model that labels, deduplicates and summarises them. Our median time-to-label fell from 22 minutes to 13. Here is the build, the test, and the 9% it still gets wrong.",
+  "count_says": "Mortal, I came prepared to object and find myself merely... advising. Fix the opening and this jury may remember your name.",
+  "voice_line": "Mortal, I came prepared to object and find myself merely... advising. Fix the opening and this jury may remember your name. Overall: 84 out of one hundred.",
+  "facts": {"word_count": 1480, "reading_time_min": 6, "title_has_number": true, "images": 5, "videos": 1, "has_demo_link": true, "has_repo_link": true, "has_open_innovation_section": true, "headings": 9, "code_blocks": 4, "repo_commits": 63, "repo_has_ci": true, "repo_languages": ["TypeScript", "Python"], "repo_has_readme": true, "repo_files_scanned": 18},
+  "partners": [
+    {"partner": "Sentry", "claim": "Best Use of Sentry", "status": "backed", "evidence": ["dependency @sentry/node in package.json", "env var SENTRY_DSN in .env.example", "import of @sentry/node in src/instrument.ts"]},
+    {"partner": "ElevenLabs", "claim": "Best Use of ElevenLabs", "status": "backed", "evidence": ["'api.elevenlabs.io' in src/voice.ts"]}
+  ],
+  "overrules": [],
+  "patterns": ["A number in the title", "A measured before/after test", "One personal problem, told in the first paragraph", "A GIF or video above the fold", "An honest 'what didn't work' section"],
+  "winner_stats": {"winners": 3, "pct_title_with_number": 67, "avg_words": 1310, "avg_images": 4.3, "pct_with_video": 67, "pct_with_demo_link": 100, "pct_with_repo_link": 100},
+  "winners": [],
+  "sources": [
+    {"label": "Example challenge brief", "url": null, "chars": 6400},
+    {"label": "Example submission post", "url": null, "chars": 9800},
+    {"label": "Example repo", "url": null, "chars": 5200}
+  ],
+  "judged_at": "2026-11-01T00:00:00+00:00"
+}

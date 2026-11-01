@@ -1,0 +1,62 @@
+# Render Blueprint: the API (FastAPI) and the web app (static React build).
+# Deploy: Render dashboard > New > Blueprint > pick this repo.
+services:
+  - type: web
+    name: fangs-api
+    runtime: python
+    region: singapore
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /healthz
+    autoDeploy: true
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.12.8"
+      # The hosted open-weight model (Gemma on Google AI Studio by default)
+      - key: LLM_BASE_URL
+        value: https://generativelanguage.googleapis.com/v1beta/openai
+      - key: LLM_MODEL
+        value: gemma-3-27b-it
+      - key: LLM_API_KEY
+        sync: false
+      # Optional: higher GitHub rate limits
+      - key: GITHUB_TOKEN
+        sync: false
+      # Optional: find the winners announcement automatically
+      - key: SERPAPI_KEY
+        sync: false
+      # Optional: "Hear the sentence"
+      - key: ELEVENLABS_API_KEY
+        sync: false
+      - key: ELEVENLABS_VOICE_ID
+        sync: false
+      # Optional: Sentry agent tracing
+      - key: SENTRY_DSN
+        sync: false
+      # CORS: only the static site may call the API
+      - key: WEB_ORIGIN
+        fromService:
+          type: web
+          name: fangs-web
+          property: host
+      - key: DAILY_REVIEW_CAP
+        value: "300"
+      - key: DAILY_VOICE_CAP
+        value: "300"
+
+  - type: web
+    name: fangs-web
+    runtime: static
+    buildCommand: cd web && npm ci && npm run build
+    staticPublishPath: web/dist
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    envVars:
+      - key: VITE_API_BASE
+        fromService:
+          type: web
+          name: fangs-api
+          property: host

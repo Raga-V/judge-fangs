@@ -1,0 +1,15 @@
+{
+  "readme": "# Triage bot\nUses Sentry for tracing and ElevenLabs for voice.",
+  "paths": ["package.json", "src/instrument.ts", "src/voice.ts", ".env.example", "render.yaml", ".github/workflows/ci.yml"],
+  "manifests": {
+    "package.json": "{\"name\": \"triage\", \"dependencies\": {\"@sentry/node\": \"^9.0.0\", \"express\": \"^4\"}, \"devDependencies\": {\"vitest\": \"^2\"}}"
+  },
+  "files": {
+    "src/instrument.ts": "import * as Sentry from '@sentry/node';\nSentry.init({ dsn: process.env.SENTRY_DSN });\n",
+    "src/voice.ts": "export async function speak(t: string) {\n  return fetch('https://api.elevenlabs.io/v1/text-to-speech/x', { headers: { 'xi-api-key': process.env.ELEVENLABS_API_KEY } });\n}\n",
+    ".env.example": "SENTRY_DSN=\nELEVENLABS_API_KEY=\n"
+  },
+  "commit_count": 63,
+  "has_ci": true,
+  "languages": {"TypeScript": 9000}
+}

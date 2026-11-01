@@ -1,0 +1,14 @@
+{
+  "readme": "# Notes app\nWe plan to add MongoDB and Sentry later.",
+  "paths": ["requirements.txt", "app/main.py", "app/db.py"],
+  "manifests": {
+    "requirements.txt": "fastapi==0.115.0\npymongo[srv]==4.8.0\n# sentry-sdk later\nhttpx>=0.27\n"
+  },
+  "files": {
+    "app/main.py": "from fastapi import FastAPI\nimport os\napp = FastAPI()\n",
+    "app/db.py": "from pymongo import MongoClient\nclient = MongoClient(os.environ['MONGODB_URI'])\n"
+  },
+  "commit_count": 4,
+  "has_ci": false,
+  "languages": {"Python": 1200}
+}
