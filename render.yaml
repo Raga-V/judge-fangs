@@ -52,6 +52,7 @@ services:
   - type: web
     name: fangs-web
     runtime: static
+    autoDeploy: true
     buildCommand: cd web && npm ci && npm run build
     staticPublishPath: web/dist
     routes:
