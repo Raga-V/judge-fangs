@@ -5,7 +5,12 @@ import type { Brief, ChatMsg, Debrief, GeneratedIdea, JudgedIdea, ReviewRequest,
  * Otherwise use same-origin /api (the Vite dev proxy). */
 export function resolveApiBase(envBase: string | undefined, hostname: string): string {
   const raw = (envBase || '').trim().replace(/\/+$/, '');
-  if (raw) return /^https?:\/\//.test(raw) ? raw : `https://${raw}`;
+  if (raw) {
+    if (/^https?:\/\//.test(raw)) return raw;
+    // Render's fromService "host" is the INTERNAL name ("fangs-api"); the browser needs the public one
+    if (/^[a-z0-9-]+$/i.test(raw) && raw !== 'localhost') return `https://${raw}.onrender.com`;
+    return `https://${raw}`;
+  }
   if (/^fangs-web(-[a-z0-9]+)?\.onrender\.com$/i.test(hostname)) return `https://${hostname.replace(/^fangs-web/i, 'fangs-api')}`;
   return '';
 }

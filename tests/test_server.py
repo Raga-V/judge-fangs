@@ -333,3 +333,10 @@ def test_cors_allows_the_render_static_site_even_without_web_origin(make_client)
     for origin in ("https://fangs-web.onrender.com.evil.example", "https://evil-fangs-web.onrender.com", "http://fangs-web.onrender.com"):
         r = c.options("/api/case/stream", headers={"origin": origin, "access-control-request-method": "POST"})
         assert "access-control-allow-origin" not in r.headers
+
+
+def test_bare_render_service_name_becomes_the_public_origin(make_client):
+    from app.config import load_settings
+    assert load_settings({"WEB_ORIGIN": "fangs-web"}).web_origin == "https://fangs-web.onrender.com"
+    assert load_settings({"WEB_ORIGIN": "fangs-web.onrender.com"}).web_origin == "https://fangs-web.onrender.com"
+    assert load_settings({"WEB_ORIGIN": "https://my.site"}).web_origin == "https://my.site"

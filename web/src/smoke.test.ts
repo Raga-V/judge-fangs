@@ -101,6 +101,7 @@ import { resolveApiBase } from './api';
 describe('finding the API', () => {
   it('uses VITE_API_BASE, else the matching fangs-api host on Render, else same-origin', () => {
     expect(resolveApiBase('fangs-api.onrender.com', 'x')).toBe('https://fangs-api.onrender.com');
+    expect(resolveApiBase('fangs-api', 'fangs-web.onrender.com')).toBe('https://fangs-api.onrender.com'); // Render's internal name
     expect(resolveApiBase('https://api.example.com/', 'x')).toBe('https://api.example.com');
     expect(resolveApiBase('', 'fangs-web.onrender.com')).toBe('https://fangs-api.onrender.com');
     expect(resolveApiBase(undefined, 'fangs-web-x7k2.onrender.com')).toBe('https://fangs-api-x7k2.onrender.com');

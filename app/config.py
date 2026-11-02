@@ -80,7 +80,8 @@ def load_settings(env: dict[str, str] | None = None) -> Settings:
     e = os.environ if env is None else env
     web = (e.get("WEB_ORIGIN") or "").strip().rstrip("/")
     if web and not web.startswith("http"):
-        web = "https://" + web  # Render's fromService "host" gives a bare hostname
+        # Render's fromService "host" is the internal name ("fangs-web"); browsers send the public origin
+        web = "https://" + (web + ".onrender.com" if re.fullmatch(r"[a-z0-9-]+", web, re.I) else web)
     return Settings(
         llm_base_url=e.get("LLM_BASE_URL") or Settings.llm_base_url,
         llm_api_key=e.get("LLM_API_KEY", ""),
