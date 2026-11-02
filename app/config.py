@@ -56,6 +56,8 @@ class Settings:
     cache_dir: str = "app/.cache"
     source_char_cap: int = 12000
     extra_origins: list[str] = field(default_factory=list)
+    # the Blueprint's static site, even if WEB_ORIGIN never got set (Render may add a suffix to the name)
+    web_origin_regex: str = r"https://fangs-web(-[a-z0-9]+)?\.onrender\.com"
 
     @property
     def llm_configured(self) -> bool:
@@ -110,4 +112,5 @@ def load_settings(env: dict[str, str] | None = None) -> Settings:
         trust_proxy=_bool(e.get("TRUST_PROXY"), True),
         cache_dir=e.get("CACHE_DIR") or "app/.cache",
         extra_origins=[o.strip().rstrip("/") for o in (e.get("EXTRA_ORIGINS") or "").split(",") if o.strip()],
+        web_origin_regex=e.get("WEB_ORIGIN_REGEX", Settings.web_origin_regex),
     )

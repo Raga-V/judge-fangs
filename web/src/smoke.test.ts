@@ -95,3 +95,16 @@ describe('the companion', () => {
     expect(msLeft({ ...c.brief, deadline_iso: '2026-10-25T23:59:00-07:00' }, Date.parse('2026-10-25T00:00:00Z'))).toBeGreaterThan(0);
   });
 });
+
+import { resolveApiBase } from './api';
+
+describe('finding the API', () => {
+  it('uses VITE_API_BASE, else the matching fangs-api host on Render, else same-origin', () => {
+    expect(resolveApiBase('fangs-api.onrender.com', 'x')).toBe('https://fangs-api.onrender.com');
+    expect(resolveApiBase('https://api.example.com/', 'x')).toBe('https://api.example.com');
+    expect(resolveApiBase('', 'fangs-web.onrender.com')).toBe('https://fangs-api.onrender.com');
+    expect(resolveApiBase(undefined, 'fangs-web-x7k2.onrender.com')).toBe('https://fangs-api-x7k2.onrender.com');
+    expect(resolveApiBase('', 'localhost')).toBe('');
+    expect(resolveApiBase('', 'evil-fangs-web.onrender.com')).toBe('');
+  });
+});

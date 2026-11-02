@@ -1,8 +1,16 @@
 import type { Brief, ChatMsg, Debrief, GeneratedIdea, JudgedIdea, ReviewRequest, Source, Verdict } from './types';
 
-// Render's fromService gives a bare host ("fangs-api.onrender.com"), so add the scheme if missing.
-const rawBase: string = (import.meta.env.VITE_API_BASE || '').trim().replace(/\/+$/, '');
-export const API_BASE: string = rawBase && !/^https?:\/\//.test(rawBase) ? `https://${rawBase}` : rawBase;
+/** Where the API lives. VITE_API_BASE wins (Render's fromService gives a bare host, so add the scheme).
+ * If it wasn't set at build time and we're the Render static site "fangs-web…", the API is "fangs-api…".
+ * Otherwise use same-origin /api (the Vite dev proxy). */
+export function resolveApiBase(envBase: string | undefined, hostname: string): string {
+  const raw = (envBase || '').trim().replace(/\/+$/, '');
+  if (raw) return /^https?:\/\//.test(raw) ? raw : `https://${raw}`;
+  if (/^fangs-web(-[a-z0-9]+)?\.onrender\.com$/i.test(hostname)) return `https://${hostname.replace(/^fangs-web/i, 'fangs-api')}`;
+  return '';
+}
+
+export const API_BASE: string = resolveApiBase(import.meta.env.VITE_API_BASE, typeof location === 'undefined' ? '' : location.hostname);
 
 export interface ServerConfig {
   demo: boolean;

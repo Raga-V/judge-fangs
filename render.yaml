@@ -38,12 +38,9 @@ services:
       # Optional: Sentry agent tracing
       - key: SENTRY_DSN
         sync: false
-      # CORS: only the static site may call the API
+      # CORS: only the static site may call the API (fangs-web*.onrender.com is also allowed by default)
       - key: WEB_ORIGIN
-        fromService:
-          type: web
-          name: fangs-web
-          property: host
+        value: https://fangs-web.onrender.com
       - key: DAILY_REVIEW_CAP
         value: "300"
       - key: DAILY_VOICE_CAP
@@ -60,8 +57,6 @@ services:
         source: /*
         destination: /index.html
     envVars:
+      # the web app also finds fangs-api*.onrender.com by itself if this is missing
       - key: VITE_API_BASE
-        fromService:
-          type: web
-          name: fangs-api
-          property: host
+        value: https://fangs-api.onrender.com

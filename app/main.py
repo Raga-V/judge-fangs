@@ -154,8 +154,8 @@ def create_app(settings: Settings | None = None, transport: httpx.AsyncBaseTrans
         await client.aclose()
 
     app = FastAPI(title="Judge Fangs", lifespan=lifespan, docs_url="/api/docs", openapi_url="/api/openapi.json")
-    app.add_middleware(CORSMiddleware, allow_origins=settings.allowed_origins, allow_methods=["GET", "POST"],
-                       allow_headers=["content-type"], max_age=600)
+    app.add_middleware(CORSMiddleware, allow_origins=settings.allowed_origins, allow_origin_regex=settings.web_origin_regex or None,
+                       allow_methods=["GET", "POST"], allow_headers=["content-type"], max_age=600)
     app.add_middleware(BodyCapMiddleware, default=64 * 1024, overrides={"/api/judge-screen": SCREEN_LIMIT})
     limiter = RateLimiter({"review": settings.rate_reviews, "backtest": settings.rate_backtest, "voice": settings.rate_voice,
                            "case": settings.rate_cases, "chat": settings.rate_chat, "ideas": settings.rate_ideas,

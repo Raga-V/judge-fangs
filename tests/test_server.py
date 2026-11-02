@@ -322,3 +322,14 @@ def test_judge_screen_identifies_then_judges(make_client):
     assert out["seen"]["kind"] == "email" and out["verdict"]["mode"] == "email"
     assert seen and seen[0].startswith("data:image/jpeg")
     assert c.post("/api/judge-screen", json={"image": "not an image"}).status_code == 400
+
+
+def test_cors_allows_the_render_static_site_even_without_web_origin(make_client):
+    c = make_client({})  # WEB_ORIGIN not set, as when the Blueprint link never resolved
+    for origin in ("https://fangs-web.onrender.com", "https://fangs-web-x7k2.onrender.com"):
+        r = c.options("/api/case/stream", headers={"origin": origin, "access-control-request-method": "POST",
+                                                   "access-control-request-headers": "content-type"})
+        assert r.status_code == 200 and r.headers.get("access-control-allow-origin") == origin
+    for origin in ("https://fangs-web.onrender.com.evil.example", "https://evil-fangs-web.onrender.com", "http://fangs-web.onrender.com"):
+        r = c.options("/api/case/stream", headers={"origin": origin, "access-control-request-method": "POST"})
+        assert "access-control-allow-origin" not in r.headers
